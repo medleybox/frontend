@@ -1,11 +1,13 @@
-FROM node:alpine
+FROM node:alpine as builder
 
 WORKDIR /app
 
 COPY . /app
 
-RUN npm install --silent
+RUN npm install --silent \
+  && npm run build \
+  && rm -rf /app/dist/index.html
 
-RUN npm run build
+FROM scratch
 
-RUN rm -rf /app/dist/index.html
+COPY --from=builder /app/dist /app
