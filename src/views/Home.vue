@@ -1,6 +1,22 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <h1>Welcome to Your Vue.js App</h1>
+    <h1>MedleyBox</h1>
+    <NewMediaFile></NewMediaFile>
   </div>
 </template>
+
+<script lang="ts">
+
+import NewMediaFile from "../components/NewMediaFile.vue"
+import { Component, Vue } from 'vue-property-decorator';
+
+@Component({
+  components: {
+    NewMediaFile,
+  },
+})
+export default class Home extends Vue {
+
+}
+
+</script>
