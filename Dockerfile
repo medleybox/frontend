@@ -1,5 +1,7 @@
 FROM node:alpine as builder
 
+ENV VUE_APP_BASE_URL ''
+
 WORKDIR /app
 
 COPY . /app
