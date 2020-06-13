@@ -53,6 +53,9 @@ export default class NewMediaFile extends Vue {
       credentials: 'same-origin'
     }).then(response =>
         response.json().then(json => {
+          if (false === json.import) {
+            alert('Failed to import');
+          }
           return json;
         })
     );
