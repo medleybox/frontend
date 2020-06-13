@@ -19,7 +19,7 @@ export default class MediaFile extends Vue {
   @Prop() readonly media!: object;
   private data(): object {
     return {
-        mainProps: {fluidGrow: true, blank: true, blankColor: '#777', width: 640, height: 360, class: 'm1'}
+        mainProps: {blank: true, blankColor: '#777', width: 640, height: 360, class: 'm1'}
     };
   }
 
