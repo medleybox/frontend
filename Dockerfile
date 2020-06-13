@@ -7,7 +7,7 @@ WORKDIR /app
 COPY . /app
 
 RUN npm install --silent \
-  && npm run build \
+  && VUE_APP_BASE_URL='' npm run build \
   && rm -rf /app/dist/index.html
 
 FROM scratch
