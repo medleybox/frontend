@@ -2,19 +2,26 @@
   <div class="home">
     <h1>MedleyBox</h1>
     <NewMediaFile></NewMediaFile>
-    <MediaFile v-for="(data) in mediaFiles" v-bind:media="data" :key="data.uuid"></MediaFile>
+    <MediaPlayer></MediaPlayer>
+    <b-card-group deck>
+      <MediaFile v-for="(data) in mediaFiles" v-bind:media="data" :key="data.uuid"></MediaFile>
+    </b-card-group>
   </div>
 </template>
 
 <script lang="ts">
 import MediaFile from "../components/MediaFile.vue";
 import NewMediaFile from "../components/NewMediaFile.vue"
+import MediaPlayer from "../components/MediaPlayer.vue"
+import { BCardGroup } from 'bootstrap-vue';
 import { Component, Vue } from 'vue-property-decorator';
 
 @Component({
   components: {
+    BCardGroup,
     MediaFile,
     NewMediaFile,
+    MediaPlayer
   },
 })
 export default class Home extends Vue {
@@ -22,7 +29,7 @@ export default class Home extends Vue {
 
   private data(): object {
     return {
-        mediaFiles: {},
+      mediaFiles: {}
     };
   }
 
