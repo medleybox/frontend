@@ -3,9 +3,9 @@
     <h1>MedleyBox</h1>
     <NewMediaFile></NewMediaFile>
     <MediaPlayer></MediaPlayer>
-    <b-card-group deck>
+    <div class="card-columns">
       <MediaFile v-for="(data) in mediaFiles" v-bind:media="data" :key="data.uuid"></MediaFile>
-    </b-card-group>
+    </div>
   </div>
 </template>
 
@@ -13,12 +13,10 @@
 import MediaFile from "../components/MediaFile.vue";
 import NewMediaFile from "../components/NewMediaFile.vue"
 import MediaPlayer from "../components/MediaPlayer.vue"
-import { BCardGroup } from 'bootstrap-vue';
 import { Component, Vue } from 'vue-property-decorator';
 
 @Component({
   components: {
-    BCardGroup,
     MediaFile,
     NewMediaFile,
     MediaPlayer
