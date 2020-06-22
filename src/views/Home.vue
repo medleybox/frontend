@@ -3,8 +3,10 @@
     <h1>MedleyBox</h1>
     <NewMediaFile></NewMediaFile>
     <MediaPlayer></MediaPlayer>
-    <div class="card-columns">
-      <MediaFile v-for="(data) in mediaFiles" v-bind:media="data" :key="data.uuid"></MediaFile>
+    <div class="container">
+      <div class="row">
+        <MediaFile v-for="(data) in mediaFiles" v-bind:media="data" :key="data.uuid"></MediaFile>
+      </div>
     </div>
   </div>
 </template>

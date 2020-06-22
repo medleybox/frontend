@@ -1,21 +1,21 @@
 <template>
-  <b-card
-    :title="media.title"
-    :img-src="media.thumbnail"
-    img-alt="Image"
-    img-top
-    tag="article"
-    style="max-width: 20rem;"
-    class="mb-2"
-  >
-    <b-card-text>
-      {{media.seconds}} - <b-button variant="primary" @click="play">Play</b-button>
-    </b-card-text>
-  </b-card>
-  <!--<BCard>
-    <b-img-lazy v-bind="mainProps" rounded :src="media.thumbnail" />
-    <p>{{media.uuid}} - {{media.title}}</p>
-  </BCard-->
+  <div class="col-3">
+    <div class="card">
+      <b-card
+        :title="media.title"
+        :img-src="media.thumbnail"
+        img-alt="Image"
+        img-top
+        style=""
+        class=""
+      >
+        <b-card-text>
+          <h5 style="height: 50px">{{media.title}}</h5>
+          {{media.seconds}} - <b-button variant="primary" @click="play">Play</b-button>
+        </b-card-text>
+      </b-card>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
@@ -46,5 +46,4 @@ export default class MediaFile extends Vue {
       console.log('mounted');
   }
 }
-
 </script>
