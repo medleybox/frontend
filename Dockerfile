@@ -4,10 +4,13 @@ ENV VUE_APP_BASE_URL ''
 
 WORKDIR /app
 
+COPY package.json package-lock.json /app/
+
+RUN npm install --silent
+
 COPY . /app
 
-RUN npm install --silent \
-  && VUE_APP_BASE_URL='' npm run build \
+RUN VUE_APP_BASE_URL='' npm run build \
   && rm -rf /app/dist/index.html
 
 FROM scratch
