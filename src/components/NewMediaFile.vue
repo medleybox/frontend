@@ -131,7 +131,8 @@ export default class NewMediaFile extends Vue {
     const formData = new FormData();
     formData.append('uuid', this.uuid);
     formData.append('title', this.title);
-
+    formData.append('url', this.url);
+    
     this.url = '';
     this.uuid = '';
     this.title = '';
