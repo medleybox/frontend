@@ -12,6 +12,7 @@
 </template>
 
 <script lang="ts">
+import { EventBus } from '../components/event-bus.js';
 import MediaFile from "../components/MediaFile.vue";
 import NewMediaFile from "../components/NewMediaFile.vue"
 import MediaPlayer from "../components/MediaPlayer.vue"
@@ -27,10 +28,23 @@ import { Component, Vue } from 'vue-property-decorator';
 export default class Home extends Vue {
   mediaFiles!: object;
 
+  constructor() {
+    super();
+    EventBus.$on('update-media-list', (data) => {
+        this.updateMediaList();
+    });
+  }
+
   private data(): object {
     return {
       mediaFiles: {}
     };
+  }
+
+  private updateMediaList() {
+    this.refreshMediaList((files: object) => {
+        this.mediaFiles = files;
+    });
   }
 
   private refreshMediaList(callback: any): void {
@@ -45,9 +59,7 @@ export default class Home extends Vue {
   }
 
   created(): void {
-    this.refreshMediaList((files: object) => {
-        this.mediaFiles = files;
-    });
+    this.updateMediaList();
   }
 }
 
