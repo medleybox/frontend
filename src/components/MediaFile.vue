@@ -20,8 +20,10 @@
 
 <script lang="ts">
 import { EventBus } from './event-bus.js';
-import { BCard, BImgLazy, BButton } from 'bootstrap-vue';
+import { BCard, BImgLazy, BButton, ModalPlugin } from 'bootstrap-vue';
 import { Component, Prop, Vue } from 'vue-property-decorator';
+
+Vue.use(ModalPlugin);
 
 @Component({
   components: {
