@@ -7,7 +7,7 @@
 <script lang="ts">
 import { EventBus } from './event-bus.js';
 import VueAudio from 'vue-audio';
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Watch, Vue } from 'vue-property-decorator';
 @Component({
   components: {
     VueAudio
