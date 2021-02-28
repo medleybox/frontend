@@ -1,6 +1,6 @@
 <template>
     <div class="file">
-      <vue-audio :autoPlay="true" :file="playing"></vue-audio>
+      <vue-audio v-bind:is="playing"> :autoPlay="true" :file="playing"></vue-audio>
     </div>
 </template>
 
@@ -15,11 +15,12 @@ import { Component, Vue } from 'vue-property-decorator';
 })
 export default class MediaPlayer extends Vue {
   playing!: string;
+  show!: boolean;
 
-  // @Watch('playing')
-  // onPropertyChanged(value: string, oldValue: string) {
-  //     console.log('Player playing changed ' + value + ' | ' + oldValue);
-  // }
+  @Watch('playing')
+  onPropertyChanged(value: string, oldValue: string) {
+      console.log('Player playing changed ' + value + ' | ' + oldValue);
+  }
 
   private data(): object {
     return {
@@ -30,10 +31,12 @@ export default class MediaPlayer extends Vue {
   private streamMediaStart(data: any): void {
     console.log('here', data.stream);
     this.playing = data.stream;
+    this.show = true;
   }
 
   constructor() {
     super();
+    this.show = false;
     this.playing = '';
     EventBus.$on('stream-media-start', (data) => {
       this.streamMediaStart(data);
