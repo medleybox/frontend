@@ -1,5 +1,6 @@
 <template>
     <div class="file">
+      <h3>Playing: {{currentPlayingTitle}}</h3>
       <vue-audio :autoPlay="true" :file="playing"></vue-audio>
     </div>
 </template>
@@ -16,7 +17,15 @@ import { Component, Watch, Vue } from 'vue-property-decorator';
 export default class MediaPlayer extends Vue {
   playing!: string;
   uuid!: string | null;
-  metadata: object;
+  metadata: any;
+
+  get currentPlayingTitle() {
+      if ('' === this.playing) {
+          return '';
+      }
+    
+    return this.metadata.title;
+  }
 
   @Watch('playing')
   onPropertyChanged(value: string, oldValue: string) {
