@@ -3,7 +3,7 @@
     <h1>MedleyBox</h1>
     <NewMediaFile></NewMediaFile>
     <MediaPlayer></MediaPlayer>
-    <div class="container">
+    <div class="container-fluid">
       <div class="row">
         <MediaFile v-for="(data) in mediaFiles" v-bind:media="data" :key="data.uuid"></MediaFile>
       </div>

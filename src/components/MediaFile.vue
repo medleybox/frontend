@@ -1,5 +1,5 @@
 <template>
-  <div class="col-3">
+  <div class="col-12 col-md-6 col-lg-4 col-xl-2">
     <div class="card">
       <b-card
         :title="media.title"
