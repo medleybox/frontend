@@ -6,7 +6,7 @@ WORKDIR /app
 
 COPY package.json package-lock.json /app/
 
-RUN npm install --silent
+RUN npm install
 
 COPY . /app
 
