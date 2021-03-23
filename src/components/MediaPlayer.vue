@@ -1,8 +1,14 @@
+<style scoped>
+  .mediaplayer {
+    margin-bottom: 15px;
+  }
+</style>
+
 <template>
-    <div class="file">
-      <h3>Playing: {{currentPlayingTitle}}</h3>
-      <vue-audio :autoPlay="true" :file="playing"></vue-audio>
-    </div>
+  <div class="mediaplayer">
+    <h3>Playing: {{currentPlayingTitle}}</h3>
+    <vue-audio :autoPlay="true" :file="playing"></vue-audio>
+  </div>
 </template>
 
 <script lang="ts">
@@ -20,21 +26,21 @@ export default class MediaPlayer extends Vue {
   metadata: any;
 
   get currentPlayingTitle() {
-      if ('' === this.playing) {
-          return '';
-      }
+    if ('' === this.playing) {
+        return '';
+    }
     
     return this.metadata.title;
   }
 
   @Watch('playing')
   onPropertyChanged(value: string, oldValue: string) {
-      console.log('Player playing changed ' + value + ' | ' + oldValue);
+    console.log('Player playing changed ' + value + ' | ' + oldValue);
   }
 
   @Watch('metadata')
   onPropertyChangedOne(value: any, oldValue: object) {
-      document.title = value.title;
+    document.title = value.title;
   }
 
   private data(): object {
