@@ -2,6 +2,7 @@
   <div class="home">
     <h1>MedleyBox</h1>
     <NewMediaFile></NewMediaFile>
+    <EditMediaFile></EditMediaFile>
     <MediaPlayer></MediaPlayer>
     <div class="container-fluid">
       <div class="row">
@@ -15,6 +16,7 @@
 import { EventBus } from '../components/event-bus.js';
 import MediaFile from "../components/MediaFile.vue";
 import NewMediaFile from "../components/NewMediaFile.vue"
+import EditMediaFile from "../components/EditMediaFile.vue"
 import MediaPlayer from "../components/MediaPlayer.vue"
 import { Component, Vue } from 'vue-property-decorator';
 
@@ -22,6 +24,7 @@ import { Component, Vue } from 'vue-property-decorator';
   components: {
     MediaFile,
     NewMediaFile,
+    EditMediaFile,
     MediaPlayer
   },
 })
@@ -30,8 +33,8 @@ export default class Home extends Vue {
 
   constructor() {
     super();
-    EventBus.$on('update-media-list', (data) => {
-        this.updateMediaList();
+    EventBus.$on('update-media-list', () => {
+      this.updateMediaList();
     });
   }
 
@@ -41,9 +44,30 @@ export default class Home extends Vue {
     };
   }
 
+  private doubleRaf (callback) {
+    requestAnimationFrame(() => {
+      requestAnimationFrame(callback)
+    })
+  }
+
   private updateMediaList() {
+    console.log('updateMediaList()');
     this.refreshMediaList((files: object) => {
+
+      // If there's a new track we can just update the mediaFiles
+      if (Object.keys(files).length !== Object.keys(this.mediaFiles).length) {
         this.mediaFiles = files;
+        return true;
+      }
+
+
+      // Otherwise we need to reset the object to avoid issues with vue - https://github.com/vuejs/vue/issues/657
+      this.mediaFiles = {};
+      Vue.nextTick(() => {
+        this.doubleRaf(() => {
+          this.mediaFiles = files;
+        });
+      });
     });
   }
 

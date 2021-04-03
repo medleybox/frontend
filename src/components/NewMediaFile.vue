@@ -31,6 +31,7 @@
   </div>
 </template>
 <script lang="ts">
+import { EventBus } from './event-bus.js';
 import { BModal, BButton, BForm, BFormInput, BImg, BContainer, BFormRow, BCol } from 'bootstrap-vue';
 import { Component, Prop, Watch, Vue } from 'vue-property-decorator';
 
@@ -148,9 +149,15 @@ export default class NewMediaFile extends Vue {
           if (false === json.import) {
             alert('Failed to import');
           }
+          this.updateMediaList();
+
           return json;
         })
     );
+  }
+
+  private updateMediaList()  {
+    EventBus.$emit('update-media-list', {});
   }
 
   private data(): object {

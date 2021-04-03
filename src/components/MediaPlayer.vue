@@ -57,7 +57,6 @@ export default class MediaPlayer extends Vue {
   }
 
   private loadTrack(): void {
-    console.log(this.uuid);
     fetch(process.env.VUE_APP_BASE_URL + '/media-file/metadata/' + this.uuid, {
         method: 'GET',
         credentials: 'same-origin',

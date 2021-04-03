@@ -6,7 +6,7 @@
 </style>
 <template>
   <div class="col-12 col-md-6 col-lg-4 col-xl-2">
-    <div style="padding: 5px" class="card">
+    <div class="card">
       <b-card
         :title="media.title"
         :img-src="media.thumbnail"
@@ -22,7 +22,7 @@
             <b-button variant="outline-primary" @click="play">
               <b-icon-play-fill></b-icon-play-fill>
             </b-button>
-            <b-button variant="outline-secondary">
+            <b-button variant="outline-secondary" @click="openModal">
               <b-icon-pencil-square></b-icon-pencil-square>
             </b-button>
           </b-button-group>
@@ -64,38 +64,8 @@ export default class MediaFile extends Vue {
     EventBus.$emit('stream-media-start', {uuid: this.media.uuid, stream: this.media.stream});
   }
 
-  private remove() {
-    this.$bvModal.msgBoxConfirm(`Please confirm that you want to delete "${this.media.title}"`, {
-        title: 'Please Confirm',
-        size: 'sm',
-        buttonSize: 'sm',
-        okVariant: 'danger',
-        okTitle: 'YES',
-        cancelTitle: 'NO',
-        footerClass: 'p-2',
-        hideHeaderClose: false,
-        centered: true
-    }).then(value => {
-        if (true === value) {
-            fetch(process.env.VUE_APP_BASE_URL + this.media.delete, {
-                method: 'GET',
-                credentials: 'same-origin',
-            }).then((response) => {
-                return response.json();
-            }).then((json) => {
-                if (true !== json.delete) {
-                    alert('Unable to remove media');
-                    return false;
-                }
-                this.updateMediaList();
-                return true;
-            });
-        }
-    }).catch(err => {
-      // An error occurred
-      console.log(err);
-    });
-
+  private openModal() {
+    EventBus.$emit('media-edit', this.media.uuid);
   }
 
   private updateMediaList()  {
