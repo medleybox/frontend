@@ -33,6 +33,7 @@
 </template>
 
 <script lang="ts">
+import { isIOS } from 'mobile-device-detect';
 import { EventBus } from './event-bus.js';
 import { BCard, BIconPlayFill, BIconPencilSquare, BButton, BButtonGroup } from 'bootstrap-vue';
 import { Component, Prop, Vue } from 'vue-property-decorator';
@@ -54,6 +55,11 @@ export default class MediaFile extends Vue {
     return new Date(this.media.seconds * 1000).toISOString().substr(11, 8)
   }
 
+  get steamVlcLink()
+  {
+    return 'vlc-x-callback://x-callback-url/stream?url=' + this.media.stream;
+  }
+
   private data(): object {
     return {
       mainProps: {blank: true, blankColor: '#777', width: 640, height: 360, class: 'm1'}
@@ -61,6 +67,12 @@ export default class MediaFile extends Vue {
   }
 
   private play() {
+    if (isIOS) {
+      window.open(this.steamVlcLink, "_blank");
+
+      return true;
+    }
+
     EventBus.$emit('stream-media-start', {uuid: this.media.uuid, stream: this.media.stream});
   }
 
