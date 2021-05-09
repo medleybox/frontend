@@ -9,12 +9,16 @@
               <b-form-input id="input-title" v-model="metadata.title"></b-form-input>
             </b-form-group>
 
-            <b-form-group id="input-group-provider" label="Provider" label-for="input-provider">
+            <b-form-group id="input-group-provider" label="Provider Class" label-for="input-provider">
               <b-form-input disabled id="input-provider" v-model="metadata.metadata.provider"></b-form-input>
             </b-form-group>
 
-             <b-form-group id="input-group-imported" label="Imported" label-for="input-imported">
+            <b-form-group id="input-group-imported" label="Date Imported" label-for="input-imported">
               <b-form-input disabled id="input-imported" v-model="metadata.metadata.imported"></b-form-input>
+            </b-form-group>
+
+            <b-form-group id="input-group-importuser" label="User Imported" label-for="input-importuser">
+              <b-form-input disabled id="input-importuser" v-model="metadata.importuser"></b-form-input>
             </b-form-group>
 
             <b-button type="submit" variant="primary">Save</b-button>
