@@ -15,6 +15,13 @@
 import { EventBus } from './event-bus.js';
 import VueAudio from 'vue-audio';
 import { Component, Watch, Vue } from 'vue-property-decorator';
+
+declare global {
+    interface Window {
+        startPlayEvent: Function;
+    }
+}
+
 @Component({
   components: {
     VueAudio
@@ -53,6 +60,7 @@ export default class MediaPlayer extends Vue {
     console.log(data);
     this.playing = data.stream;
     this.uuid = data.uuid;
+    window.startPlayEvent();
     this.loadTrack();
   }
 

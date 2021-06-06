@@ -1,0 +1,9 @@
+#!/bin/bash
+
+
+cd ../frontend/ && \
+DOCKER_BUILDKIT=1 docker build -t medleybox/frontend . && \
+cd ../webapp && \
+bin/docker-build \
+cd ../frontend
+

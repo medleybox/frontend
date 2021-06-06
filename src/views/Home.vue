@@ -4,6 +4,7 @@
     <NewMediaFile></NewMediaFile>
     <EditMediaFile></EditMediaFile>
     <MediaPlayer></MediaPlayer>
+    <MediaFileImportLog></MediaFileImportLog>
     <div class="container-fluid">
       <div class="row">
         <MediaFile v-for="(data) in mediaFiles" v-bind:media="data" :key="data.uuid"></MediaFile>
@@ -18,6 +19,7 @@ import MediaFile from "../components/MediaFile.vue";
 import NewMediaFile from "../components/NewMediaFile.vue"
 import EditMediaFile from "../components/EditMediaFile.vue"
 import MediaPlayer from "../components/MediaPlayer.vue"
+import MediaFileImportLog from "../components/MediaFileImportLog.vue"
 import { Component, Vue } from 'vue-property-decorator';
 
 @Component({
@@ -25,7 +27,8 @@ import { Component, Vue } from 'vue-property-decorator';
     MediaFile,
     NewMediaFile,
     EditMediaFile,
-    MediaPlayer
+    MediaPlayer,
+    MediaFileImportLog
   },
 })
 export default class Home extends Vue {
@@ -36,6 +39,14 @@ export default class Home extends Vue {
     EventBus.$on('update-media-list', () => {
       this.updateMediaList();
     });
+
+    document.addEventListener('ws', ((event: CustomEvent) => {
+        console.log('ws event', event, event.detail);
+        if ("refreshMediaList" === event.detail) {
+          this.updateMediaList();
+        }
+    }) as EventListener, false);
+
   }
 
   private data(): object {
@@ -51,15 +62,14 @@ export default class Home extends Vue {
   }
 
   private updateMediaList() {
-    console.log('updateMediaList()');
     this.refreshMediaList((files: object) => {
+      console.log('refreshMediaList()');
 
       // If there's a new track we can just update the mediaFiles
       if (Object.keys(files).length !== Object.keys(this.mediaFiles).length) {
         this.mediaFiles = files;
         return true;
       }
-
 
       // Otherwise we need to reset the object to avoid issues with vue - https://github.com/vuejs/vue/issues/657
       this.mediaFiles = {};

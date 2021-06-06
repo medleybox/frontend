@@ -66,14 +66,15 @@ export default class MediaFile extends Vue {
     };
   }
 
-  private play() {
+  private play(): boolean {
     if (isIOS) {
       window.open(this.steamVlcLink, "_blank");
 
       return true;
     }
-
     EventBus.$emit('stream-media-start', {uuid: this.media.uuid, stream: this.media.stream});
+
+    return false;
   }
 
   private openModal() {
@@ -85,7 +86,7 @@ export default class MediaFile extends Vue {
   }
 
   mounted(): void {
-    console.log('mounted');
+    //
   }
 }
 </script>

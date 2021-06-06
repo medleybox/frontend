@@ -133,6 +133,8 @@ export default class NewMediaFile extends Vue {
     formData.append('uuid', this.uuid);
     formData.append('title', this.title);
     formData.append('url', this.url);
+
+    this.openImportLog();
     
     this.url = '';
     this.uuid = '';
@@ -149,7 +151,6 @@ export default class NewMediaFile extends Vue {
           if (false === json.import) {
             alert('Failed to import');
           }
-          this.updateMediaList();
 
           return json;
         })
@@ -158,6 +159,10 @@ export default class NewMediaFile extends Vue {
 
   private updateMediaList()  {
     EventBus.$emit('update-media-list', {});
+  }
+
+  private openImportLog()  {
+    EventBus.$emit('media-import-log-start', this.uuid);
   }
 
   private data(): object {

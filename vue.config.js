@@ -1,4 +1,7 @@
 module.exports = {
+  devServer: {
+    disableHostCheck: true
+  },
   chainWebpack: config => {
     if(config.plugins.has('extract-css')) {
       const extractCSSPlugin = config.plugin('extract-css')

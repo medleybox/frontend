@@ -1,0 +1,11 @@
+#!/bin/bash
+
+docker run \
+  --rm \
+  -it \
+  -p 8085:8085 \
+  --entrypoint="node" \
+  -v $(pwd):$(pwd) \
+  --workdir $(pwd) \
+  node:15-alpine3.12 \
+  ./node_modules/.bin/vue-cli-service serve --port 8085 --public "http://medleybox.local:8085"

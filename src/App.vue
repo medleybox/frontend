@@ -2,6 +2,8 @@
   <div id="app">
     <div id="nav">
       <router-link to="/">Home</router-link> |
+      <a href="/admin">Admin</a> |
+      <a href="/logout">Logout</a> |
     </div>
     <router-view/>
   </div>
@@ -18,5 +20,8 @@ export default class App extends Vue {
 <style>
 .modal-content {
   min-height: 150px;
+}
+::-webkit-scrollbar {
+    color-scheme: dark;
 }
 </style>

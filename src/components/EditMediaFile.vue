@@ -13,6 +13,10 @@
               <b-form-input disabled id="input-provider" v-model="metadata.metadata.provider"></b-form-input>
             </b-form-group>
 
+            <b-form-group id="input-group-size" label="Size" label-for="input-size">
+              <b-form-input disabled id="input-size" v-model="metadata.metadata.size"></b-form-input>
+            </b-form-group>
+
             <b-form-group id="input-group-imported" label="Date Imported" label-for="input-imported">
               <b-form-input disabled id="input-imported" v-model="metadata.metadata.imported"></b-form-input>
             </b-form-group>
@@ -83,6 +87,8 @@ export default class NewMediaFile extends Vue {
     formData.append('uuid', this.uuid);
     formData.append('title', this.metadata.title);
 
+    this.resetModal();
+
     fetch(process.env.VUE_APP_BASE_URL + '/media-file/update', {
       body: formData,
       method: 'POST',
@@ -93,15 +99,13 @@ export default class NewMediaFile extends Vue {
             alert('Failed to update MediaFile');
           }
 
-          this.resetModal();
-
           return json;
         })
     );
   }
 
   private resetModal()  {
-    EventBus.$emit('update-media-list', {});
+    //EventBus.$emit('update-media-list', {});
     this.$bvModal.hide('edit');
     this.uuid = '';
     this.metadata = {loaded: false, title: '', metadata: {}, delete: ''};
@@ -121,6 +125,8 @@ export default class NewMediaFile extends Vue {
         centered: true
     }).then(value => {
         if (true === value) {
+            console.log('edit hide');
+            this.$bvModal.hide('edit');
             fetch(process.env.VUE_APP_BASE_URL + this.metadata.delete, {
                 method: 'GET',
                 credentials: 'same-origin',
