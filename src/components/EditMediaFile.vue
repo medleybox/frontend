@@ -14,7 +14,7 @@
             </b-form-group>
 
             <b-form-group id="input-group-size" label="Size" label-for="input-size">
-              <b-form-input disabled id="input-size" v-model="metadata.metadata.size"></b-form-input>
+              <b-form-input disabled id="input-size" v-model="mediaSize"></b-form-input>
             </b-form-group>
 
             <b-form-group id="input-group-imported" label="Date Imported" label-for="input-imported">
@@ -37,11 +37,16 @@
 import { EventBus } from './event-bus.js';
 import { BModal, BButton, BForm, BFormGroup, BFormInput, BImg, BContainer, BFormRow, BCol } from 'bootstrap-vue';
 import { Component, Vue } from 'vue-property-decorator';
+import prettyBytes from 'pretty-bytes';
+
+interface Metadata {
+  [key: string]: any;
+}
 
 interface EntryMetadata {
     loaded: boolean;
     title: string;
-    metadata: object;
+    metadata: Metadata;
     delete: string;
 }
 
@@ -75,7 +80,6 @@ export default class NewMediaFile extends Vue {
     }).then((json) => {
         this.fetching = false;
         this.metadata = json;
-        console.log(this.metadata, this);
     });
   }
 
@@ -110,6 +114,14 @@ export default class NewMediaFile extends Vue {
     this.uuid = '';
     this.metadata = {loaded: false, title: '', metadata: {}, delete: ''};
     this.fetching = false;
+  }
+
+  private get mediaSize() {
+    if (null === this.metadata.metadata.size) {
+      return '0';
+    }
+
+    return prettyBytes(this.metadata.metadata.size);
   }
 
   private remove() {
