@@ -1,20 +1,22 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <a href="/admin">Admin</a> |
-      <a href="/logout">Logout</a> |
-    </div>
+    <app-navbar/>
     <router-view/>
   </div>
 </template>
 <script>
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
+import AppNavbar from "./components/AppNavbar.vue"
 
-import { Vue } from 'vue-property-decorator';
+import { Component, Vue } from 'vue-property-decorator';
+
+@Component({
+  components: {
+    'app-navbar': AppNavbar 
+  },
+})
 export default class App extends Vue {
-
 }
 </script>
 <style>
