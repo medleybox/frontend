@@ -1,15 +1,19 @@
+<style scoped>
+  .mediaplayer-row {
+    margin: -18px;
+  }
+</style>
 <template>
   <div class="home">
-    <h1>MedleyBox</h1>
-    <NewMediaFile></NewMediaFile>
     <EditMediaFile></EditMediaFile>
-    <MediaPlayer></MediaPlayer>
     <MediaFileImportLog></MediaFileImportLog>
-    <div class="container-fluid">
-      <div class="row">
+    <MediaPlayer></MediaPlayer>
+    <b-container fluid>
+      <b-row>
+        <NewMediaFile></NewMediaFile>
         <MediaFile v-for="(data) in mediaFiles" v-bind:media="data" :key="data.uuid"></MediaFile>
-      </div>
-    </div>
+      </b-row>
+    </b-container>
   </div>
 </template>
 

@@ -1,6 +1,36 @@
+<style scoped>
+  .card-body {
+    display: none;
+  }
+
+  .card-footer {
+    display: none;
+  }
+
+  .card-header {
+    display: flex !important;
+    justify-content: center !important;
+    min-height: 108px;
+  }
+
+  .card-header .btn {
+    height: 50%;
+    margin: auto;
+  }
+</style>
 <template>
-  <div class="import">
-    <b-button v-b-modal.import>New Import</b-button>
+  <div class="col-12 col-md-6 col-lg-4 col-xl-2">
+    <b-card>
+      <template class="d-flex justify-content-center" #header>
+        <b-button size="lg" variant="outline-primary" v-b-modal.import>
+          <b-icon-plus></b-icon-plus>
+        </b-button>
+      </template>
+      <p>not rendered</p>
+      <template #footer>
+        <p>new file</p>
+      </template>
+    </b-card>
 
     <b-modal v-model="modalShow" id="import" title="Import new media" hide-footer>
       <b-form @submit="onSubmit">
@@ -32,13 +62,14 @@
 </template>
 <script lang="ts">
 import { EventBus } from './event-bus.js';
-import { BModal, BButton, BForm, BFormInput, BImg, BContainer, BFormRow, BCol } from 'bootstrap-vue';
+import { BModal, BButton, BIconPlus, BForm, BFormInput, BImg, BContainer, BFormRow, BCol } from 'bootstrap-vue';
 import { Component, Prop, Watch, Vue } from 'vue-property-decorator';
 
 @Component({
   components: {
     BModal,
     BButton,
+    BIconPlus,
     BForm,
     BFormInput,
     BImg,

@@ -1,6 +1,5 @@
 <template>
   <div class="import-log">
-    <b-button v-b-modal.import-log>Import-log log</b-button>
     <b-modal v-model="modalShow" size="lg" id="import-log" title="Importing media output" hide-footer>
        <b-container fluid class="edit-modal">
           <b-progress :value="progress" class="mb-3"></b-progress>

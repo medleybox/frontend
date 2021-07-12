@@ -6,8 +6,7 @@
 </style>
 <template>
   <div class="col-12 col-md-6 col-lg-4 col-xl-2">
-    <div class="card">
-      <b-card
+    <b-card
         :title="media.title"
         :img-src="media.thumbnail"
         img-alt="Image"
@@ -27,8 +26,7 @@
             </b-button>
           </b-button-group>
         </template>
-      </b-card>
-    </div>
+    </b-card>
   </div>
 </template>
 
