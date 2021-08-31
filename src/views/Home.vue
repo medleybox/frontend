@@ -85,7 +85,7 @@ export default class Home extends Vue {
     });
   }
 
-  private refreshMediaList(callback: any): void {
+  private refreshMediaList(callback: (json: Array<string>) => void): void {
     fetch(process.env.VUE_APP_BASE_URL + '/media-file/list', {
         method: 'GET',
         credentials: 'same-origin',

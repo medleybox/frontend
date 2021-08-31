@@ -137,7 +137,8 @@ export default class MediaFileImportLog extends Vue {
   }
 
   @Watch('output')
-  onOutputChanged(value: Array<string>, oldValue: Array<string>) {
+  onOutputChanged() {
+    // value: Array<string>, oldValue: Array<string>
     const elem: HTMLInputElement = document.getElementById('pre_output') as HTMLInputElement;
     if (null === elem) {
       return null;
@@ -197,9 +198,6 @@ export default class MediaFileImportLog extends Vue {
 }
 </script>
 <style>
-.import-log {
-  margin-top: 20px;
-}
 .output--container {
   white-space: pre-wrap;
   word-wrap: break-word;

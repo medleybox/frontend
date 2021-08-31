@@ -1,12 +1,16 @@
 <style scoped>
   .mediaplayer {
     margin: 0px;
+    min-height: 160px;
   }
 </style>
 <template>
   <div class="mediaplayer">
     <div class="player-controls float-right" v-show="'' != this.playing">
       <b-button-group size="sm" class="float-left">
+        <b-button variant="outline-primary" @click="playPause">
+          {{showTrackSeconds}} / {{showTrackTotal}}
+        </b-button>
         <b-button variant="outline-primary" @click="playPause">
           <b-icon-play-fill v-show="false === isPlaying"></b-icon-play-fill>
           <b-icon-pause-fill v-show="true === isPlaying"></b-icon-pause-fill>
@@ -46,6 +50,8 @@ export default class MediaPlayer extends Vue {
   playing!: string;
   isPlaying: boolean;
   uuid!: string | null;
+  trackSeconds = 0;
+  trackTotal = 0;
   metadata: any;
   waveSurfer: any;
   options: object;
@@ -58,13 +64,23 @@ export default class MediaPlayer extends Vue {
     return this.metadata.title;
   }
 
+  get showTrackSeconds()
+  {
+    return new Date(this.trackSeconds * 1000).toISOString().substr(11, 8)
+  }
+
+  get showTrackTotal()
+  {
+    return new Date(this.trackTotal * 1000).toISOString().substr(11, 8)
+  }
+
   @Watch('playing')
   onPropertyChanged(value: string, oldValue: string) {
     console.log('Player playing changed ' + value + ' | ' + oldValue);
   }
 
   @Watch('metadata')
-  onPropertyChangedOne(value: any, oldValue: object) {
+  onPropertyChangedOne(value: any) {
     document.title = value.title;
   }
 
@@ -83,8 +99,6 @@ export default class MediaPlayer extends Vue {
     this.playing = data.stream.replace(/^http:\/\//i, 'https://');
     this.uuid = data.uuid;
 
-    this.waveSurfer.load(this.playing);
-    window.startPlayEvent();
     this.loadTrack();
   }
 
@@ -96,6 +110,14 @@ export default class MediaPlayer extends Vue {
         return response.json();
     }).then((json) => {
         this.metadata = json;
+        if (null !== this.metadata.metadata.wavedata && null !== this.metadata.metadata.wavedata.data) {
+          this.waveSurfer.empty();
+          this.waveSurfer.load(this.playing, this.metadata.metadata.wavedata.data);
+          window.startPlayEvent();
+          this.waveSurfer.play();
+        } else {
+          alert('Unable to play media!');
+        }
     });
   }
 
@@ -106,8 +128,19 @@ export default class MediaPlayer extends Vue {
       height: 128
     });
 
+    document.onkeypress = function(e) {
+      e = e || window.event;
+      const charCode = e.keyCode || e.which;
+      if (charCode === 32) {
+        e.preventDefault();
+        waveSurfer.playPause();
+        return false;
+      }
+    }
+
     waveSurfer.on('ready', () => {
       console.log('waveSurfer ready');
+      this.trackTotal = waveSurfer.getDuration().toFixed(1);
       waveSurfer.play();
     });
 
@@ -117,6 +150,14 @@ export default class MediaPlayer extends Vue {
 
     waveSurfer.on('pause', () => {
       this.isPlaying = false;
+    });
+
+    waveSurfer.on('audioprocess', () => {
+      if(waveSurfer.isPlaying()) {
+          const currentTime = waveSurfer.getCurrentTime();
+
+          this.trackSeconds = currentTime.toFixed(1);
+      }
     });
 
     this.waveSurfer = waveSurfer;
