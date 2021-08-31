@@ -8,7 +8,7 @@
   <div class="mediaplayer">
     <div class="player-controls float-right" v-show="'' != this.playing">
       <b-button-group size="sm" class="float-left">
-        <b-button variant="outline-primary" @click="playPause">
+        <b-button variant="outline-primary">
           {{showTrackSeconds}} / {{showTrackTotal}}
         </b-button>
         <b-button variant="outline-primary" @click="playPause">
