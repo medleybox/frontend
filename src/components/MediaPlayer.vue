@@ -76,6 +76,7 @@ export default class MediaPlayer extends Vue {
 
   @Watch('playing')
   onPropertyChanged(value: string, oldValue: string) {
+    this.waveSurfer.empty();
     console.log('Player playing changed ' + value + ' | ' + oldValue);
   }
 
@@ -124,6 +125,7 @@ export default class MediaPlayer extends Vue {
   mounted() {
     const waveSurfer = WaveSurfer.create({
       container: document.getElementById('waveform'),
+      backend: 'MediaElementWebAudio',
       scrollParent: false,
       height: 128
     });
