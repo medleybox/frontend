@@ -2,7 +2,7 @@
 
 
 cd ../frontend/ && \
-DOCKER_BUILDKIT=1 docker build -t medleybox/frontend . && \
+DOCKER_BUILDKIT=1 docker build -t ghcr.io/medleybox/frontend:master . && \
 cd ../webapp && \
 bin/docker-build \
 cd ../frontend
