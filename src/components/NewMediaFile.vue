@@ -95,6 +95,15 @@ export default class NewMediaFile extends Vue {
     this.check();
   }
 
+  @Watch('modalShow')
+  onModalShowChanged(value: any, oldValue: any) {
+    // Reset the modal when opening
+    if (true === value) {
+      this.url = '';
+      this.checking = false;
+    }
+  }
+
   check(): boolean {
     if ("" === this.url) {
       return false;
