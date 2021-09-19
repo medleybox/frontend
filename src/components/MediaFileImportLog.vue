@@ -77,6 +77,14 @@ export default class MediaFileImportLog extends Vue {
     return 100 / 7 * step;
   };
 
+  public resetOutputState() {
+    console.log('resetOutputState()');
+    this.output = [];
+    this.log = [];
+    this.progress = 0;
+    this.status = 'queue';
+  }
+
   @Watch('status')
   onStatusChanged(value: string, oldValue: string) {
     if (value === oldValue) {
@@ -132,7 +140,10 @@ export default class MediaFileImportLog extends Vue {
       console.log('reset state');
     }
     if ('finish' === value) {
-      setTimeout(() => {this.modalShow = false}, 5500);
+      setTimeout(() => {
+        this.modalShow = false;
+        this.resetOutputState();
+      }, 5500);
     }
   }
 
@@ -172,10 +183,7 @@ export default class MediaFileImportLog extends Vue {
     EventBus.$on('media-import-log-start', (uuid: string) => {
       this.uuid = uuid;
       Vue.nextTick(() => {
-        this.output = [];
-        this.log = [];
-        this.progress = 0;
-        this.status = 'queue';
+        this.resetOutputState();
         this.$bvModal.show('import-log');
       });
     });
@@ -204,7 +212,7 @@ export default class MediaFileImportLog extends Vue {
 }
 
 pre#pre_log {
-  height: 140px;
+  height: 165px;
 }
 
 pre#pre_output {
