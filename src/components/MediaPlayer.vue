@@ -66,17 +66,24 @@ export default class MediaPlayer extends Vue {
 
   get showTrackSeconds()
   {
+    if (Number.isNaN(this.trackSeconds)) {
+      return '--:--:--';
+    }
+
     return new Date(this.trackSeconds * 1000).toISOString().substr(11, 8)
   }
 
   get showTrackTotal()
   {
+    if (Number.isNaN(this.trackTotal)) {
+      return '--:--:--';
+    }
+
     return new Date(this.trackTotal * 1000).toISOString().substr(11, 8)
   }
 
   @Watch('playing')
   onPropertyChanged(value: string, oldValue: string) {
-    this.waveSurfer.empty();
     console.log('Player playing changed ' + value + ' | ' + oldValue);
   }
 
@@ -114,6 +121,7 @@ export default class MediaPlayer extends Vue {
         if (null !== this.metadata.metadata.wavedata && null !== this.metadata.metadata.wavedata.data) {
           this.waveSurfer.empty();
           this.waveSurfer.load(this.playing, this.metadata.metadata.wavedata.data);
+          this.trackTotal = this.metadata.seconds;
           window.startPlayEvent();
           this.waveSurfer.play();
         } else {
@@ -142,7 +150,6 @@ export default class MediaPlayer extends Vue {
 
     waveSurfer.on('ready', () => {
       console.log('waveSurfer ready');
-      this.trackTotal = waveSurfer.getDuration().toFixed(1);
       waveSurfer.play();
     });
 
@@ -156,9 +163,8 @@ export default class MediaPlayer extends Vue {
 
     waveSurfer.on('audioprocess', () => {
       if(waveSurfer.isPlaying()) {
-          const currentTime = waveSurfer.getCurrentTime();
-
-          this.trackSeconds = currentTime.toFixed(1);
+        const currentTime = waveSurfer.getCurrentTime();
+        this.trackSeconds = currentTime.toFixed(1);
       }
     });
 
