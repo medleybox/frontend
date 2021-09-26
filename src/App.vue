@@ -20,10 +20,33 @@ export default class App extends Vue {
 }
 </script>
 <style>
-.modal-content {
-  min-height: 150px;
-}
 ::-webkit-scrollbar {
     color-scheme: dark;
 }
+
+body, .close {
+  color: white;
+}
+
+#app, html {
+  background-color: rgb(29, 32, 33);
+}
+
+.form-control, .form-control:focus {
+  background-color: rgb(29, 32, 33);
+  color: white;
+}
+
+.card, .modal-content {
+  background-color: #111111;
+}
+
+.modal-content {
+  min-height: 150px;
+}
+
+.modal-title {
+  color: var(--primary);
+}
+
 </style>

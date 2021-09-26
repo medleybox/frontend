@@ -23,7 +23,6 @@
 </template>
 
 <script lang="ts">
-import { EventBus } from './event-bus.js';
 import { Vue } from 'vue-property-decorator';
 
 export default class AppNavbar extends Vue {

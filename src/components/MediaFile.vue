@@ -3,16 +3,34 @@
   .card-body {
     display: none;
   }
+
+  .card {
+    margin-bottom: 20px;
+  }
+
+  .card-header {
+    padding-bottom: 0;
+  }
+
+  .mediafile--title {
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    height: 48px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+  }
+
 </style>
 <template>
-  <div class="col-12 col-md-6 col-lg-4 col-xl-2">
+  <div class="col-12 col-md-6 col-lg-4 col-xl-3">
     <b-card
         :title="media.title"
         :img-src="media.thumbnail"
         img-alt="Image"
         img-top>
         <template #header>
-          <h5 style="min-height: 40px">{{media.title}}</h5>
+          <h5 class="mediafile--title">{{media.title}}</h5>
         </template>
         <p>not rendered</p>
         <template #footer>

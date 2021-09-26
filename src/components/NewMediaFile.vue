@@ -1,75 +1,74 @@
 <style scoped>
-  .card-body {
-    display: none;
-  }
+.import-modal {
+  margin-top: 10px;
+  margin-bottom: 35px;
+}
 
-  .card-footer {
-    display: none;
-  }
+.loader-svg {
+  width: 100%;
+  height: 185px;
+  padding: 50px;
+  color: var(--info);
+}
 
-  .card-header {
-    display: flex !important;
-    justify-content: center !important;
-    min-height: 108px;
-  }
-
-  .card-header .btn {
-    height: 50%;
-    margin: auto;
-  }
+.NewMediaFile {
+  padding: 0;
+}
+.NewMediaFile .btn.btn-outline-primary {
+  padding: 0;
+}
 </style>
 <template>
-  <div class="col-12 col-md-6 col-lg-4 col-xl-2">
-    <b-card>
-      <template class="d-flex justify-content-center" #header>
-        <b-button size="lg" variant="outline-primary" v-b-modal.import>
-          <b-icon-plus></b-icon-plus>
-        </b-button>
-      </template>
-      <p>not rendered</p>
-      <template #footer>
-        <p>new file</p>
-      </template>
-    </b-card>
-
-    <b-modal v-model="modalShow" id="import" title="Import new media" hide-footer>
-      <b-form @submit="onSubmit">
-        <b-container class="import-modal">
+<span class="NewMediaFile">
+<b-button variant="outline-primary" v-b-modal.import>
+  <b-icon-plus font-scale="2"></b-icon-plus>
+</b-button>
+<b-modal v-model="modalShow" id="import" title="Import new media" hide-footer static>
+    <b-form @submit="onSubmit">
+      <b-container class="import-modal">
+        <b-form-row>
+          <b-col cols="12">
+            <b-form-input :disabled="this.checking === true" v-model="url" placeholder="Enter link to import" autofocus></b-form-input>
+          </b-col>
+        </b-form-row>
+        <div v-if="uuid !== ''">
           <b-form-row>
             <b-col cols="12">
-              <b-form-input :disabled="this.checking === true" v-model="url" placeholder="Enter link to import" autofocus></b-form-input>
+              <b-img fluid-grow :src="thumbnail"></b-img>
             </b-col>
           </b-form-row>
-          <div v-if="uuid !== ''">
-            <b-form-row>
-              <b-col cols="12">
-                <b-img fluid-grow :src="thumbnail"></b-img>
-              </b-col>
-            </b-form-row>
-            <b-form-row>
-              <b-col cols="10">
-                <b-form-input v-model="title"></b-form-input>
-              </b-col>
-              <b-col cols="1">
-                <b-button type="submit" variant="primary">Import</b-button>
-              </b-col>
-            </b-form-row>
-          </div>
-        </b-container>
-      </b-form>
-    </b-modal>
-  </div>
+          <b-form-row>
+            <b-col cols="10">
+              <b-form-input v-model="title"></b-form-input>
+            </b-col>
+            <b-col cols="1">
+              <b-button type="submit" variant="primary">Import</b-button>
+            </b-col>
+          </b-form-row>
+        </div>
+        <div v-if="this.checking === true">
+          <b-row>
+            <b-col cols="6" offset-md="3">
+              <b-icon-circle-fill class="loader-svg" animation="throb" font-scale="4"></b-icon-circle-fill>
+            </b-col>
+          </b-row>
+        </div>
+      </b-container>
+    </b-form>
+  </b-modal>
+</span>
 </template>
 <script lang="ts">
 import { EventBus } from './event-bus.js';
-import { BModal, BButton, BIconPlus, BForm, BFormInput, BImg, BContainer, BFormRow, BCol } from 'bootstrap-vue';
-import { Component, Prop, Watch, Vue } from 'vue-property-decorator';
+import { BModal, BButton, BIconPlus, BIconCircleFill, BForm, BFormInput, BImg, BContainer, BFormRow, BCol } from 'bootstrap-vue';
+import { Component, Watch, Vue } from 'vue-property-decorator';
 
 @Component({
   components: {
     BModal,
     BButton,
     BIconPlus,
+    BIconCircleFill,
     BForm,
     BFormInput,
     BImg,
@@ -79,7 +78,7 @@ import { Component, Prop, Watch, Vue } from 'vue-property-decorator';
   },
 })
 export default class NewMediaFile extends Vue {
-  @Prop() url!: string;
+  url = '';
   modalShow!: boolean;
   checking!: boolean;
   uuid!: string;
@@ -96,7 +95,7 @@ export default class NewMediaFile extends Vue {
   }
 
   @Watch('modalShow')
-  onModalShowChanged(value: any, oldValue: any) {
+  onModalShowChanged(value: boolean) {
     // Reset the modal when opening
     if (true === value) {
       this.url = '';
@@ -129,6 +128,7 @@ export default class NewMediaFile extends Vue {
       this.uuid = '';
       this.title = '';
       this.thumbnail = '';
+      this.modalShow = false;
       alert(message);
     };
 
@@ -216,8 +216,3 @@ export default class NewMediaFile extends Vue {
   }
 }
 </script>
-<style>
-.import-modal {
-  margin-top: 20px;
-}
-</style>

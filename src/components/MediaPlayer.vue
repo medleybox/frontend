@@ -1,33 +1,43 @@
 <style scoped>
   .mediaplayer {
     margin: 0px;
-    min-height: 160px;
+    min-height: 42px;
+  }
+
+  .no-hover-colour:hover {
+    background-color: #1d2021;
+  }
+
+  .player--timer {
+    color: #007bff;
   }
 </style>
 <template>
   <div class="mediaplayer">
-    <div class="player-controls float-right" v-show="'' != this.playing">
+    <div class="player-controls float-right">
       <b-button-group size="sm" class="float-left">
-        <b-button variant="outline-primary">
+        <b-button variant="outline-primary" class="no-hover-colour player--timer">
           {{showTrackSeconds}} / {{showTrackTotal}}
         </b-button>
-        <b-button variant="outline-primary" @click="playPause">
+        <b-button v-show="'' != this.playing" variant="outline-primary" @click="playPause">
           <b-icon-play-fill v-show="false === isPlaying"></b-icon-play-fill>
           <b-icon-pause-fill v-show="true === isPlaying"></b-icon-pause-fill>
         </b-button>
+        <NewMediaFile></NewMediaFile>
         <b-button variant="outline-primary" @click="settings">
           <b-icon-gear-fill></b-icon-gear-fill>
         </b-button>
       </b-button-group>
     </div>
     <h3>{{currentPlayingTitle}}</h3>
-    <div id="waveform" ref="wave"></div>
+    <div v-show="'' != this.playing" id="waveform" ref="wave"></div>
   </div>
 </template>
 
 <script lang="ts">
 import { EventBus } from './event-bus.js';
 import WaveSurfer from "wavesurfer.js";
+import NewMediaFile from "../components/NewMediaFile.vue";
 import { BIconPlayFill, BIconPauseFill, BIconGearFill, BButton, BButtonGroup } from 'bootstrap-vue';
 import { Component, Watch, Vue } from 'vue-property-decorator';
 
@@ -39,6 +49,7 @@ declare global {
 
 @Component({
   components: {
+    NewMediaFile,
     BButton,
     BButtonGroup,
     BIconPlayFill,

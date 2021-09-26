@@ -8,28 +8,27 @@
     <EditMediaFile></EditMediaFile>
     <MediaFileImportLog></MediaFileImportLog>
     <MediaPlayer></MediaPlayer>
-    <b-container fluid>
-      <b-row>
-        <NewMediaFile></NewMediaFile>
-        <MediaFile v-for="(data) in mediaFiles" v-bind:media="data" :key="data.uuid"></MediaFile>
-      </b-row>
-    </b-container>
+    <div class="">
+      <b-container fluid>
+        <b-row>
+          <MediaFile v-for="(data) in mediaFiles" v-bind:media="data" :key="data.uuid"></MediaFile>
+        </b-row>
+      </b-container>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { EventBus } from '../components/event-bus.js';
 import MediaFile from "../components/MediaFile.vue";
-import NewMediaFile from "../components/NewMediaFile.vue"
-import EditMediaFile from "../components/EditMediaFile.vue"
-import MediaPlayer from "../components/MediaPlayer.vue"
-import MediaFileImportLog from "../components/MediaFileImportLog.vue"
+import EditMediaFile from "../components/EditMediaFile.vue";
+import MediaPlayer from "../components/MediaPlayer.vue";
+import MediaFileImportLog from "../components/MediaFileImportLog.vue";
 import { Component, Vue } from 'vue-property-decorator';
 
 @Component({
   components: {
     MediaFile,
-    NewMediaFile,
     EditMediaFile,
     MediaPlayer,
     MediaFileImportLog
