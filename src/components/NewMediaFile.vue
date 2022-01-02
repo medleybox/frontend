@@ -28,7 +28,7 @@
       <b-container class="import-modal">
         <b-form-row>
           <b-col cols="12">
-            <b-form-input :disabled="this.checking === true" v-model="url" placeholder="Enter link to import" autofocus></b-form-input>
+            <b-form-input :disabled="this.checking === true" v-model="url" placeholder="Enter link to import" ref="urlInput"></b-form-input>
           </b-col>
         </b-form-row>
         <div v-if="uuid !== ''">
@@ -101,6 +101,12 @@ export default class NewMediaFile extends Vue {
       this.url = '';
       this.checking = false;
     }
+
+    this.$nextTick(() => {
+      const urlInput = this.$refs.urlInput;
+
+      (urlInput as HTMLElement).focus();
+    });
   }
 
   check(): boolean {
