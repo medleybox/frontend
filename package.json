@@ -12,7 +12,7 @@
     "bootstrap-vue": "2.21.2",
     "core-js": "^3.9.1",
     "mobile-device-detect": "^0.4.3",
-    "node-fetch": "^2.6.1",
+    "node-fetch": "^3.1.1",
     "node-sass": "^6.0.1",
     "pretty-bytes": "^5.6.0",
     "vue": "^2.6.12",
