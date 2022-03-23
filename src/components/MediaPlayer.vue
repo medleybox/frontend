@@ -2,6 +2,7 @@
   .mediaplayer {
     margin: 0px;
     min-height: 42px;
+    background-color: #1d2021;
   }
 
   .no-hover-colour:hover {
@@ -13,7 +14,7 @@
   }
 </style>
 <template>
-  <div class="mediaplayer">
+  <div class="mediaplayer sticky-top">
     <div class="player-controls float-right">
       <b-button-group size="sm" class="float-left">
         <b-button variant="outline-primary" class="no-hover-colour player--timer">
@@ -43,6 +44,7 @@ import { Component, Watch, Vue } from 'vue-property-decorator';
 
 declare global {
     interface Window {
+        // eslint-disable-next-line
         startPlayEvent: Function;
     }
 }

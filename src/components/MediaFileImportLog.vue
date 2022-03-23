@@ -196,11 +196,13 @@ export default class MediaFileImportLog extends Vue {
         this.status = event.detail.stage;
 
         //console.log('[importLogOutput] ' + event.detail.data, this.output);
+        // eslint-disable-next-line
     }) as EventListener, false);
 
     document.addEventListener('importOutput', ((event: CustomEvent) => {
         this.output.push(event.detail.data);
         //console.log('[importOutput] ' + event.detail.data, this.output);
+        // eslint-disable-next-line
     }) as EventListener, false);
   }
 }

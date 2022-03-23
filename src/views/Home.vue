@@ -48,6 +48,7 @@ export default class Home extends Vue {
         if ("refreshMediaList" === event.detail) {
           this.updateMediaList();
         }
+        // eslint-disable-next-line
     }) as EventListener, false);
 
   }
