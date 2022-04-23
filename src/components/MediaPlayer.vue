@@ -155,8 +155,12 @@ export default class MediaPlayer extends Vue {
       e = e || window.event;
       const charCode = e.keyCode || e.which;
       if (charCode === 32) {
-        e.preventDefault();
-        waveSurfer.playPause();
+        console.log('onkeypress charCode 32');
+        // if ('' != this.playing) {
+        //   e.preventDefault();
+        // }
+        // waveSurfer.playPause();
+
         return false;
       }
     }
