@@ -151,6 +151,8 @@ export default class MediaPlayer extends Vue {
       height: 128
     });
 
+    console.log('mounted media player')
+
     document.onkeypress = function(e) {
       e = e || window.event;
       const charCode = e.keyCode || e.which;

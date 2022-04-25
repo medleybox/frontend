@@ -21,6 +21,10 @@
     display: -webkit-box;
   }
 
+  .mediafile--button-group .btn.dropdown-toggle {
+    padding: 4px;
+  }
+
 </style>
 <template>
   <div class="col-12 col-md-6 col-lg-4 col-xl-3">
@@ -35,13 +39,19 @@
         <p>not rendered</p>
         <template #footer>
           <small class="text-muted">{{showTime}}</small>
-          <b-button-group size="sm" class="float-right">
+          <b-button-group size="sm" class="float-right mediafile--button-group">
             <b-button variant="outline-primary" @click="play">
               <b-icon-play-fill></b-icon-play-fill>
             </b-button>
-            <b-button variant="outline-secondary" @click="openModal">
-              <b-icon-pencil-square></b-icon-pencil-square>
-            </b-button>
+            <b-dropdown dropleft variant="outline-primary">
+              <template #button-content></template>
+              <b-dropdown-item @click="play">Play</b-dropdown-item>
+              <b-dropdown-item disabled>Play next</b-dropdown-item>
+              <b-dropdown-item @click="copyStreamLink">Copy stream link</b-dropdown-item>
+              <b-dropdown-item disabled>Download</b-dropdown-item>
+              <b-dropdown-item @click="openEditModal">Edit</b-dropdown-item>
+              <b-dropdown-item @click="openDeleteModal">Delete</b-dropdown-item>
+            </b-dropdown>
           </b-button-group>
         </template>
     </b-card>
@@ -51,12 +61,13 @@
 <script lang="ts">
 import { isIOS } from 'mobile-device-detect';
 import { EventBus } from './event-bus.js';
-import { BCard, BIconPlayFill, BIconPencilSquare, BButton, BButtonGroup } from 'bootstrap-vue';
+import { BCard, BIconPlayFill, BIconPencilSquare, BDropdown, BButton, BButtonGroup } from 'bootstrap-vue';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
 @Component({
   components: {
     BCard,
+    BDropdown,
     BButton,
     BButtonGroup,
     BIconPlayFill,
@@ -66,20 +77,30 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 export default class MediaFile extends Vue {
   @Prop() readonly media!: any;
 
-  get showTime()
-  {
-    return new Date(this.media.seconds * 1000).toISOString().substr(11, 8)
-  }
-
-  get steamVlcLink()
-  {
-    return 'vlc-x-callback://x-callback-url/stream?url=' + this.media.stream;
-  }
-
   private data(): object {
     return {
       mainProps: {blank: true, blankColor: '#777', width: 640, height: 360, class: 'm1'}
     };
+  }
+
+  get showTime()
+  {
+    return new Date(this.media.seconds * 1000).toISOString().substr(11, 8);
+  }
+
+  get steamVlcLink(): string
+  {
+    return `vlc-x-callback://x-callback-url/stream?url=${this.media.stream}`;
+  }
+
+  private async copyStreamLink()
+  {
+    try {
+      const link = this.media.stream;
+      await navigator.clipboard.writeText(link);
+    } catch($e) {
+      alert('Cannot copy stream link');
+    }
   }
 
   private play(): boolean {
@@ -93,16 +114,16 @@ export default class MediaFile extends Vue {
     return false;
   }
 
-  private openModal() {
+  private openEditModal(): void {
     EventBus.$emit('media-edit', this.media.uuid);
   }
 
-  private updateMediaList()  {
-    EventBus.$emit('update-media-list', {});
+  private openDeleteModal(): void {
+    EventBus.$emit('media-delete', this.media.uuid);
   }
 
-  mounted(): void {
-    //
+  private updateMediaList(): void  {
+    EventBus.$emit('update-media-list', {});
   }
 }
 </script>

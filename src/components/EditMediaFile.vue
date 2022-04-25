@@ -50,6 +50,8 @@ interface EntryMetadata {
     delete: string;
 }
 
+type MetadataCallback = () => void;
+
 @Component({
   components: {
     BModal,
@@ -69,7 +71,7 @@ export default class NewMediaFile extends Vue {
   uuid!: string;
   metadata!: EntryMetadata;
 
-  private loadMedadata(uuid: string): void {
+  private loadMedadata(uuid: string, callback: MetadataCallback|undefined|null): void {
     this.uuid = uuid;
     this.fetching = true;
     fetch(process.env.VUE_APP_BASE_URL + '/media-file/metadata/' + this.uuid, {
@@ -80,6 +82,10 @@ export default class NewMediaFile extends Vue {
     }).then((json) => {
         this.fetching = false;
         this.metadata = json;
+
+        if (undefined !== callback && null !== callback) {
+          callback();
+        }
     });
   }
 
@@ -178,10 +184,13 @@ export default class NewMediaFile extends Vue {
     this.fetching = false;
 
     EventBus.$on('media-edit', (uuid: string) => {
-      this.loadMedadata(uuid);
+      this.loadMedadata(uuid, null);
       Vue.nextTick(() => {
         this.$bvModal.show('edit');
       });
+    });
+    EventBus.$on('media-delete', (uuid: string) => {
+      this.loadMedadata(uuid, () => {this.remove()});
     });
   }
 }
