@@ -151,22 +151,6 @@ export default class MediaPlayer extends Vue {
       height: 128
     });
 
-    console.log('mounted media player')
-
-    document.onkeypress = function(e) {
-      e = e || window.event;
-      const charCode = e.keyCode || e.which;
-      if (charCode === 32) {
-        console.log('onkeypress charCode 32');
-        // if ('' != this.playing) {
-        //   e.preventDefault();
-        // }
-        // waveSurfer.playPause();
-
-        return false;
-      }
-    }
-
     waveSurfer.on('ready', () => {
       console.log('waveSurfer ready');
       waveSurfer.play();
