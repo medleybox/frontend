@@ -214,10 +214,12 @@ export default class MediaFileImportLog extends Vue {
 }
 
 pre#pre_log {
+  color: #fff;
   height: 165px;
 }
 
 pre#pre_output {
+  color: #fff;
   height: 260px;
 }
 </style>
