@@ -1,7 +1,6 @@
 <style scoped>
 .import-modal {
   margin-top: 10px;
-  margin-bottom: 35px;
 }
 
 .loader-svg {

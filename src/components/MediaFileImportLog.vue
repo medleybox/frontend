@@ -3,11 +3,11 @@
     <b-modal v-model="modalShow" size="lg" id="import-log" title="Importing media output" hide-footer>
        <b-container fluid class="edit-modal">
           <b-progress :value="progress" class="mb-3"></b-progress>
-          <div class="" v-show="!this.showOutputMoal">
+          <div class="" v-show="!this.showOutputModal">
             <h3>Import queued</h3>
-            <p>Waiting for import job</p>
+            <p>Waiting for job to start processing</p>
           </div>
-          <div class="" v-show="this.showOutputMoal">
+          <div class="" v-show="this.showOutputModal">
             <h3>Import log</h3>
             <div class="output--container output--log">
               <pre id='pre_log'>{{this.logToString}}</pre>
@@ -50,7 +50,7 @@ export default class MediaFileImportLog extends Vue {
   log: Array<string> = [];
   logString = ' ';
 
-  get showOutputMoal(): boolean {
+  get showOutputModal(): boolean {
     return this.status !== 'queue';
   }
 
