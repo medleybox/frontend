@@ -25,6 +25,10 @@
           <b-icon-pause-fill v-show="true === isPlaying"></b-icon-pause-fill>
         </b-button>
         <NewMediaFile></NewMediaFile>
+        <b-button variant="outline-primary" @click="toggleShowType">
+          <b-icon-vinyl v-show="false === this.show"></b-icon-vinyl>
+          <b-icon-vinyl-fill v-show="true === this.show"></b-icon-vinyl-fill>
+        </b-button>
         <b-button variant="outline-primary" @click="settings">
           <b-icon-gear-fill></b-icon-gear-fill>
         </b-button>
@@ -39,7 +43,7 @@
 import { EventBus } from './event-bus.js';
 import WaveSurfer from "wavesurfer.js";
 import NewMediaFile from "../components/NewMediaFile.vue";
-import { BIconPlayFill, BIconPauseFill, BIconGearFill, BButton, BButtonGroup } from 'bootstrap-vue';
+import { BIconPlayFill, BIconPauseFill, BIconGearFill, BIconVinyl, BIconVinylFill, BButton, BButtonGroup } from 'bootstrap-vue';
 import { Component, Watch, Vue } from 'vue-property-decorator';
 
 declare global {
@@ -56,7 +60,9 @@ declare global {
     BButtonGroup,
     BIconPlayFill,
     BIconPauseFill,
-    BIconGearFill
+    BIconGearFill,
+    BIconVinyl,
+    BIconVinylFill
   },
 })
 export default class MediaPlayer extends Vue {
@@ -68,6 +74,7 @@ export default class MediaPlayer extends Vue {
   metadata: any;
   waveSurfer: any;
   options: object;
+  show: boolean;
 
   get currentPlayingTitle(): string {
     if ('' === this.playing) {
@@ -114,6 +121,16 @@ export default class MediaPlayer extends Vue {
   public settings()
   {
     alert('Soon!');
+  }
+
+  public toggleShowType()
+  {
+    this.show = !this.show;
+    let typeText = 'my-list';
+    if (true === this.show) {
+      typeText = 'list';
+    }
+    EventBus.$emit('update-show-type', typeText);
   }
 
   private streamMediaStart(data: any): void {
@@ -188,6 +205,7 @@ export default class MediaPlayer extends Vue {
     this.uuid = null;
     this.metadata = {};
     this.options = {};
+    this.show = false;
 
     EventBus.$on('stream-media-start', (data) => {
       this.streamMediaStart(data);

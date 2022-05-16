@@ -36,17 +36,26 @@ import { Component, Vue } from 'vue-property-decorator';
 })
 export default class Home extends Vue {
   mediaFiles!: object;
+  showType = '';
 
   constructor() {
     super();
     EventBus.$on('update-media-list', () => {
-      this.updateMediaList();
+      this.updateMediaList(this.showType);
+    });
+    EventBus.$on('update-show-type', (type: string) => {
+      this.showType = type;
+      Vue.nextTick(() => {
+        this.doubleRaf(() => {
+          this.updateMediaList(this.showType);
+        });
+      });
     });
 
     document.addEventListener('ws', ((event: CustomEvent) => {
         console.log('ws event', event, event.detail);
         if ("refreshMediaList" === event.detail) {
-          this.updateMediaList();
+          this.updateMediaList(this.showType);
         }
         // eslint-disable-next-line
     }) as EventListener, false);
@@ -55,7 +64,8 @@ export default class Home extends Vue {
 
   private data(): object {
     return {
-      mediaFiles: {}
+      mediaFiles: {},
+      showType: 'my-list',
     };
   }
 
@@ -65,10 +75,8 @@ export default class Home extends Vue {
     })
   }
 
-  private updateMediaList() {
-    this.refreshMediaList((files: object) => {
-      console.log('refreshMediaList()');
-
+  private updateMediaList(showType: string) {
+    this.refreshMediaList(showType, (files: object) => {
       // If there's a new track we can just update the mediaFiles
       if (Object.keys(files).length !== Object.keys(this.mediaFiles).length) {
         this.mediaFiles = files;
@@ -85,8 +93,8 @@ export default class Home extends Vue {
     });
   }
 
-  private refreshMediaList(callback: (json: Array<string>) => void): void {
-    fetch(process.env.VUE_APP_BASE_URL + '/media-file/list', {
+  private refreshMediaList(show: string, callback: (json: Array<string>) => void): void {
+    fetch(process.env.VUE_APP_BASE_URL + '/media-file/' + show, {
         method: 'GET',
         credentials: 'same-origin',
     }).then((response) => {
@@ -97,7 +105,7 @@ export default class Home extends Vue {
   }
 
   created(): void {
-    this.updateMediaList();
+    this.updateMediaList(this.showType);
   }
 }
 
