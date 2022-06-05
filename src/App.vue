@@ -5,8 +5,8 @@
   </div>
 </template>
 <script>
-import 'bootstrap/dist/css/bootstrap.css';
-import 'bootstrap-vue/dist/bootstrap-vue.css';
+// import 'bootstrap/dist/css/bootstrap.css';
+// import 'bootstrap-vue/dist/bootstrap-vue.css';
 import AppNavbar from "./components/AppNavbar.vue"
 
 import { Component, Vue } from 'vue-property-decorator';
@@ -19,7 +19,16 @@ import { Component, Vue } from 'vue-property-decorator';
 export default class App extends Vue {
 }
 </script>
-<style>
+<style lang="scss">
+$theme-colors: (
+  "primary": #5afffa,
+  "danger": #ff4136
+);
+
+// Import Bootstrap and BootstrapVue source SCSS files
+@import '~bootstrap/scss/bootstrap.scss';
+@import '~bootstrap-vue/src/index.scss';
+
 ::-webkit-scrollbar {
     color-scheme: dark;
 }
