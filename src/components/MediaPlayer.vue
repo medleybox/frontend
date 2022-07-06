@@ -34,8 +34,34 @@
         </b-button>
       </b-button-group>
     </div>
-    <h3>{{currentPlayingTitle}}</h3>
+    <h3 v-show="'' != this.playing">{{currentPlayingTitle}}</h3>
     <div v-show="'' != this.playing" id="waveform" ref="wave"></div>
+    <div class="media-filters">
+      <b-container fluid>
+        <b-row no-gutters>
+          <b-col cols="4">
+            <span class="media-filters_search">
+              <b-form>
+                <div>
+                  <b-button-group>
+                    <b-form-input v-model="search" disabled placeholder="Type to search" ref="searchInput" autocomplete="off"></b-form-input>
+                    <b-button variant="outline-primary"><b-icon-search></b-icon-search></b-button>
+                  </b-button-group>
+                </div>
+              </b-form>
+            </span>
+          </b-col>
+          <b-col cols="3" offset="1">
+            <span class="media-filters_type">
+              <b-tabs pills>
+                <b-tab title="All Music" active></b-tab>
+                <b-tab title="My Music" disabled></b-tab>
+              </b-tabs>
+            </span>
+          </b-col>
+        </b-row>
+      </b-container>
+    </div>
   </div>
 </template>
 
@@ -43,7 +69,7 @@
 import { EventBus } from './event-bus.js';
 import WaveSurfer from "wavesurfer.js";
 import NewMediaFile from "../components/NewMediaFile.vue";
-import { BIconPlayFill, BIconPauseFill, BIconGearFill, BIconVinyl, BIconVinylFill, BButton, BButtonGroup } from 'bootstrap-vue';
+import { BIconPlayFill, BIconPauseFill, BIconGearFill, BIconVinyl, BIconVinylFill, BIconSearch, BButton, BButtonGroup } from 'bootstrap-vue';
 import { Component, Watch, Vue } from 'vue-property-decorator';
 
 declare global {
@@ -62,7 +88,8 @@ declare global {
     BIconPauseFill,
     BIconGearFill,
     BIconVinyl,
-    BIconVinylFill
+    BIconVinylFill,
+    BIconSearch
   },
 })
 export default class MediaPlayer extends Vue {
@@ -75,6 +102,7 @@ export default class MediaPlayer extends Vue {
   waveSurfer: any;
   options: object;
   show: boolean;
+  search: string;
 
   get currentPlayingTitle(): string {
     if ('' === this.playing) {
@@ -165,7 +193,8 @@ export default class MediaPlayer extends Vue {
       container: document.getElementById('waveform'),
       backend: 'MediaElementWebAudio',
       scrollParent: false,
-      height: 128
+      height: 128,
+      progressColor: 'rgb(99, 255, 252)'
     });
 
     waveSurfer.on('ready', () => {
@@ -206,6 +235,7 @@ export default class MediaPlayer extends Vue {
     this.metadata = {};
     this.options = {};
     this.show = false;
+    this.search = '';
 
     EventBus.$on('stream-media-start', (data) => {
       this.streamMediaStart(data);

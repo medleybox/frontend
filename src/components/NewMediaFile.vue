@@ -27,7 +27,7 @@
       <b-container class="import-modal">
         <b-form-row>
           <b-col cols="12">
-            <b-form-input :disabled="this.checking === true" v-model="url" placeholder="Enter link to import" ref="urlInput"></b-form-input>
+            <b-form-input :disabled="this.checking === true" v-model="url" placeholder="Enter link to import" ref="urlInput" autocomplete="off"></b-form-input>
           </b-col>
         </b-form-row>
         <div v-if="uuid !== ''">

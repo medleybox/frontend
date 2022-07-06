@@ -5,10 +5,7 @@
   </div>
 </template>
 <script>
-// import 'bootstrap/dist/css/bootstrap.css';
-// import 'bootstrap-vue/dist/bootstrap-vue.css';
 import AppNavbar from "./components/AppNavbar.vue"
-
 import { Component, Vue } from 'vue-property-decorator';
 
 @Component({
@@ -21,7 +18,7 @@ export default class App extends Vue {
 </script>
 <style lang="scss">
 $theme-colors: (
-  "primary": #5afffa,
+  "primary": rgb(0, 150, 147),
   "danger": #ff4136
 );
 

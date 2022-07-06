@@ -27,8 +27,8 @@
 
 </style>
 <template>
-  <div class="col-12 col-md-6 col-lg-4 col-xl-3">
-    <b-card
+   <b-col cols="12" md="6" lg="4" xl="3">
+      <b-card
         :title="media.title"
         :img-src="media.thumbnail"
         img-alt="Image"
@@ -55,7 +55,7 @@
           </b-button-group>
         </template>
     </b-card>
-  </div>
+  </b-col>
 </template>
 
 <script lang="ts">
@@ -111,7 +111,7 @@ export default class MediaFile extends Vue {
     }
     EventBus.$emit('stream-media-start', {uuid: this.media.uuid, stream: this.media.stream});
 
-    return false;
+    return true;
   }
 
   private openEditModal(): void {
