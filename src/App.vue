@@ -55,4 +55,12 @@ body, .close {
   color: var(--primary);
 }
 
+.sticky-top {
+  z-index: 999 !important;
+}
+
+.navbar {
+  padding: 0 10px;
+}
+
 </style>
