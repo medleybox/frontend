@@ -27,7 +27,7 @@ $theme-colors: (
 @import '~bootstrap-vue/src/index.scss';
 
 ::-webkit-scrollbar {
-    color-scheme: dark;
+  color-scheme: dark;
 }
 
 body, .close {

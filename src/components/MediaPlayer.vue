@@ -25,10 +25,6 @@
           <b-icon-pause-fill v-show="true === isPlaying"></b-icon-pause-fill>
         </b-button>
         <NewMediaFile></NewMediaFile>
-        <b-button variant="outline-primary" @click="toggleShowType">
-          <b-icon-vinyl v-show="false === this.show"></b-icon-vinyl>
-          <b-icon-vinyl-fill v-show="true === this.show"></b-icon-vinyl-fill>
-        </b-button>
         <b-button variant="outline-primary" @click="settings">
           <b-icon-gear-fill></b-icon-gear-fill>
         </b-button>
@@ -54,8 +50,8 @@
           <b-col cols="3" offset="1">
             <span class="media-filters_type">
               <b-tabs pills>
-                <b-tab title="All Music" active></b-tab>
-                <b-tab title="My Music" disabled></b-tab>
+                <b-tab @click="changeShowType('home')" title="All Music" active></b-tab>
+                <b-tab @click="changeShowType('user')" title="My Music"></b-tab>
               </b-tabs>
             </span>
           </b-col>
@@ -151,14 +147,8 @@ export default class MediaPlayer extends Vue {
     alert('Soon!');
   }
 
-  public toggleShowType()
-  {
-    this.show = !this.show;
-    let typeText = 'my-list';
-    if (true === this.show) {
-      typeText = 'list';
-    }
-    EventBus.$emit('update-show-type', typeText);
+  public changeShowType(type: string) {
+    EventBus.$emit('update-show-type', type);
   }
 
   private streamMediaStart(data: any): void {

@@ -11,7 +11,7 @@
     <div class="">
       <b-container fluid>
         <b-row>
-          <MediaFile v-for="(data) in mediaFiles" v-bind:media="data" :key="data.uuid"></MediaFile>
+          <MediaFile v-for="(data) in mediaShowing" v-bind:media="data" :key="data.uuid"></MediaFile>
         </b-row>
       </b-container>
     </div>
@@ -24,7 +24,7 @@ import MediaFile from "../components/MediaFile.vue";
 import EditMediaFile from "../components/EditMediaFile.vue";
 import MediaPlayer from "../components/MediaPlayer.vue";
 import MediaFileImportLog from "../components/MediaFileImportLog.vue";
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Watch, Vue } from 'vue-property-decorator';
 
 @Component({
   components: {
@@ -36,37 +36,35 @@ import { Component, Vue } from 'vue-property-decorator';
 })
 export default class Home extends Vue {
   mediaFiles!: object;
-  showType = '';
+  mediaShowing!: object;
+  showType = 'home';
 
   constructor() {
     super();
-    EventBus.$on('update-media-list', () => {
-      this.updateMediaList(this.showType);
-    });
-    EventBus.$on('update-show-type', (type: string) => {
-      this.showType = type;
-      Vue.nextTick(() => {
-        this.doubleRaf(() => {
-          this.updateMediaList(this.showType);
-        });
-      });
-    });
-
     document.addEventListener('ws', ((event: CustomEvent) => {
         console.log('ws event', event, event.detail);
         if ("refreshMediaList" === event.detail) {
-          this.updateMediaList(this.showType);
+          this.updateMediaList();
         }
         // eslint-disable-next-line
     }) as EventListener, false);
-
   }
 
   private data(): object {
     return {
       mediaFiles: {},
-      showType: 'my-list',
+      mediaShowing: {},
+      showType: 'home',
     };
+  }
+
+  @Watch('showType')
+  onShowTypeChanged(value: string, oldValue: string) {
+    Vue.nextTick(() => {
+      this.doubleRaf(() => {
+        this.mediaShowing = this.mediaFiles[value];
+      });
+    });
   }
 
   private doubleRaf (callback) {
@@ -75,26 +73,20 @@ export default class Home extends Vue {
     })
   }
 
-  private updateMediaList(showType: string) {
-    this.refreshMediaList(showType, (files: object) => {
-      // If there's a new track we can just update the mediaFiles
-      if (Object.keys(files).length !== Object.keys(this.mediaFiles).length) {
-        this.mediaFiles = files;
-        return true;
-      }
-
-      // Otherwise we need to reset the object to avoid issues with vue - https://github.com/vuejs/vue/issues/657
+  private updateMediaList() {
+    this.refreshMediaList((files: object) => {
       this.mediaFiles = {};
       Vue.nextTick(() => {
         this.doubleRaf(() => {
           this.mediaFiles = files;
+          this.mediaShowing = this.mediaFiles[this.showType];
         });
       });
     });
   }
 
-  private refreshMediaList(show: string, callback: (json: Array<string>) => void): void {
-    fetch(process.env.VUE_APP_BASE_URL + '/media-file/' + show, {
+  private refreshMediaList(callback: (json: Array<string>) => void): void {
+    fetch(process.env.VUE_APP_BASE_URL + '/media-file/list', {
         method: 'GET',
         credentials: 'same-origin',
     }).then((response) => {
@@ -105,7 +97,15 @@ export default class Home extends Vue {
   }
 
   created(): void {
-    this.updateMediaList(this.showType);
+    this.updateMediaList();
+
+    EventBus.$on('update-media-list', () => {
+      this.updateMediaList();
+    });
+
+    EventBus.$on('update-show-type', (type: string) => {
+      this.showType = type;
+    });
   }
 }
 
