@@ -143,15 +143,18 @@ export default class MediaFile extends Vue {
   private async resolveThumbnail()
   {
     const imageUrlToBase64 = async (url: string) => {
-      const that = this;
       const response = await fetch(url, {
           method: 'GET',
           credentials: 'same-origin',
       })
       .then( response => response.blob() )
       .then( blob => {
-          var reader = new FileReader() ;
-          reader.onload = function(){ that.thumbnail = this.result ? this.result.toString() : ''; };
+          // eslint-disable-next-line
+          const that = this;
+          var reader = new FileReader();
+          reader.onload = function(){
+            that.thumbnail = this.result ? this.result.toString() : '';
+          };
           reader.readAsDataURL(blob);
       });
     };
