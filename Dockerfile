@@ -15,4 +15,4 @@ RUN VUE_APP_BASE_URL='' npm run build \
 
 FROM scratch
 
-COPY --from=builder /app/dist /app
+COPY --from=builder /app /app
