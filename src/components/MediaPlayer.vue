@@ -50,8 +50,8 @@
           <b-col cols="3" offset="1">
             <span class="media-filters_type">
               <b-tabs pills>
-                <b-tab @click="changeShowType('home')" title="All Music" active></b-tab>
-                <b-tab @click="changeShowType('user')" title="My Music"></b-tab>
+                <b-tab @click="changeShowType('home')" title="Home" active></b-tab>
+                <b-tab @click="changeShowType('user')" title="My Media"></b-tab>
               </b-tabs>
             </span>
           </b-col>

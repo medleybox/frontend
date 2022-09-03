@@ -5,7 +5,16 @@
   }
 
   .card {
-    margin-bottom: 20px;
+    margin: 4px;
+    padding-top: 0%;
+  }
+
+  .loading > .card {
+    padding-top: 55%;
+  }
+
+  .card-img-top {
+    min-height: 24vh;
   }
 
   .card-header {
@@ -25,36 +34,53 @@
     padding: 4px;
   }
 
+  .mediafile--thumbnail_loader {
+    padding-top: 20%;
+    z-index: 100;
+    display: flex;
+    position: absolute;
+    padding-left: 45%;
+  }
+
+  .mediafile--thumbnail_loader > .spinner-border {
+    width: 3rem;
+    height: 3rem;
+  }
+
 </style>
 <template>
-   <b-col cols="12" md="6" lg="4" xl="3">
-      <b-card
-        :title="media.title"
-        :img-src="media.thumbnail"
-        img-alt="Image"
-        img-top>
-        <template #header>
-          <h5 class="mediafile--title">{{media.title}}</h5>
-        </template>
-        <p>not rendered</p>
-        <template #footer>
-          <small class="text-muted">{{showTime}}</small>
-          <b-button-group size="sm" class="float-right mediafile--button-group">
-            <b-button variant="outline-primary" @click="play">
-              <b-icon-play-fill></b-icon-play-fill>
-            </b-button>
-            <b-dropdown dropleft variant="outline-primary">
-              <template #button-content></template>
-              <b-dropdown-item @click="play">Play</b-dropdown-item>
-              <b-dropdown-item disabled>Play next</b-dropdown-item>
-              <b-dropdown-item @click="copyStreamLink">Copy stream link</b-dropdown-item>
-              <b-dropdown-item disabled>Download</b-dropdown-item>
-              <b-dropdown-item @click="openEditModal">Edit</b-dropdown-item>
-              <b-dropdown-item @click="openDeleteModal">Delete</b-dropdown-item>
-            </b-dropdown>
-          </b-button-group>
-        </template>
-    </b-card>
+    <b-col cols="12" md="6" lg="4" xl="3">
+      <span :class="wrapperClass">
+        <div v-show="this.thumbnail === ''" class="mediafile--thumbnail_loader justify-content-center mb-3">
+          <b-spinner></b-spinner>
+        </div>
+        <b-card
+          :title="media.title"
+          :img-src="thumbnail"
+          img-alt=""
+          img-top>
+          <template #header>
+            <h5 class="mediafile--title">{{media.title}}</h5>
+          </template>
+          <template #footer>
+            <small class="text-muted">{{showTime}}</small>
+            <b-button-group size="sm" class="float-right mediafile--button-group">
+              <b-button variant="outline-primary" @click="play">
+                <b-icon-play-fill></b-icon-play-fill>
+              </b-button>
+              <b-dropdown dropleft variant="outline-primary">
+                <template #button-content></template>
+                <b-dropdown-item @click="play">Play</b-dropdown-item>
+                <b-dropdown-item disabled>Play next</b-dropdown-item>
+                <b-dropdown-item @click="copyStreamLink">Copy stream link</b-dropdown-item>
+                <b-dropdown-item disabled>Download</b-dropdown-item>
+                <b-dropdown-item @click="openEditModal">Edit</b-dropdown-item>
+                <b-dropdown-item @click="openDeleteModal">Delete</b-dropdown-item>
+              </b-dropdown>
+            </b-button-group>
+          </template>
+      </b-card>
+    </span>
   </b-col>
 </template>
 
@@ -75,12 +101,23 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
   },
 })
 export default class MediaFile extends Vue {
+  thumbnail: string;
   @Prop() readonly media!: any;
 
   private data(): object {
     return {
-      mainProps: {blank: true, blankColor: '#777', width: 640, height: 360, class: 'm1'}
+      mainProps: {blank: true, blankColor: '#777', width: 640, height: 360, class: 'm1'},
+      thumbnail: ''
     };
+  }
+
+  get wrapperClass()
+  {
+    if ('' === this.thumbnail) {
+      return 'loading';
+    }
+
+    return '';
   }
 
   get showTime()
@@ -101,6 +138,25 @@ export default class MediaFile extends Vue {
     } catch($e) {
       alert('Cannot copy stream link');
     }
+  }
+
+  private async resolveThumbnail()
+  {
+    const imageUrlToBase64 = async (url: string) => {
+      const that = this;
+      const response = await fetch(url, {
+          method: 'GET',
+          credentials: 'same-origin',
+      })
+      .then( response => response.blob() )
+      .then( blob => {
+          var reader = new FileReader() ;
+          reader.onload = function(){ that.thumbnail = this.result ? this.result.toString() : ''; };
+          reader.readAsDataURL(blob);
+      });
+    };
+
+    return await imageUrlToBase64(this.media.thumbnail);
   }
 
   private play(): boolean {
@@ -124,6 +180,15 @@ export default class MediaFile extends Vue {
 
   private updateMediaList(): void  {
     EventBus.$emit('update-media-list', {});
+  }
+
+  constructor() {
+    super();
+    this.thumbnail = '';
+  }
+
+  mounted(): void {
+    this.resolveThumbnail();
   }
 }
 </script>

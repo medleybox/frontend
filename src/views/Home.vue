@@ -10,7 +10,7 @@
     <MediaPlayer></MediaPlayer>
     <div class="">
       <b-container fluid>
-        <b-row>
+        <b-row no-gutters>
           <MediaFile v-for="(data) in mediaShowing" v-bind:media="data" :key="data.uuid"></MediaFile>
         </b-row>
       </b-container>
