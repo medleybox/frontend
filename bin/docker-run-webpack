@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 docker run \
   --rm \
@@ -8,4 +8,4 @@ docker run \
   -v $(pwd):$(pwd) \
   --workdir $(pwd) \
   node:16-alpine \
-  ./node_modules/.bin/vue-cli-service serve
+  ./node_modules/.bin/vue-cli-service serve --public="medleybox.local"
