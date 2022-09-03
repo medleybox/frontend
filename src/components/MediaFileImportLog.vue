@@ -154,7 +154,7 @@ export default class MediaFileImportLog extends Vue {
     if (null === elem) {
       return null;
     }
-    elem.scrollTo(1000, 200000);
+    elem.scrollTo(0, 200000);
   }
 
   @Watch('log')
