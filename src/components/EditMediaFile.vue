@@ -3,7 +3,6 @@
     <b-modal ref="editModal" v-model="modalShow" id="edit" title="Edit media" hide-footer>
       <b-form @submit="onSubmit">
         <b-container fluid class="edit-modal">
-          <p>UUID: {{uuid}}</p>
           <div v-if="fetching !== true && metadata.loaded === true">
             <b-form-group id="input-group-title" label="Title" label-for="input-title">
               <b-form-input id="input-title" v-model="metadata.title"></b-form-input>

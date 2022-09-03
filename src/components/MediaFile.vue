@@ -5,8 +5,14 @@
   }
 
   .card {
-    margin: 4px;
+    margin: 0px;
     padding-top: 0%;
+  }
+
+  @media screen and (min-width: 990px) {
+    .card {
+      margin: 4px;
+    }
   }
 
   .loading > .card {
@@ -46,7 +52,6 @@
     width: 3rem;
     height: 3rem;
   }
-
 </style>
 <template>
     <b-col cols="12" md="6" lg="4" xl="3">

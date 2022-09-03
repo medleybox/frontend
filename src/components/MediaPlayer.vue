@@ -12,6 +12,11 @@
   .player--timer {
     color: #007bff;
   }
+
+  .player--title {
+    margin-bottom: 0px;
+    padding-top: 6px;
+  }
 </style>
 <template>
   <div class="mediaplayer sticky-top">
@@ -30,40 +35,16 @@
         </b-button>
       </b-button-group>
     </div>
-    <h3 v-show="'' != this.playing">{{currentPlayingTitle}}</h3>
+    <h3 class="player--title" v-show="'' != this.playing">{{currentPlayingTitle}}</h3>
     <div v-show="'' != this.playing" id="waveform" ref="wave"></div>
-    <div class="media-filters">
-      <b-container fluid>
-        <b-row no-gutters>
-          <b-col cols="4">
-            <span class="media-filters_search">
-              <b-form>
-                <div>
-                  <b-button-group>
-                    <b-form-input v-model="search" disabled placeholder="Type to search" ref="searchInput" autocomplete="off"></b-form-input>
-                    <b-button variant="outline-primary"><b-icon-search></b-icon-search></b-button>
-                  </b-button-group>
-                </div>
-              </b-form>
-            </span>
-          </b-col>
-          <b-col cols="3" offset="1">
-            <span class="media-filters_type">
-              <b-tabs pills>
-                <b-tab @click="changeShowType('home')" title="Home" active></b-tab>
-                <b-tab @click="changeShowType('user')" title="My Media"></b-tab>
-              </b-tabs>
-            </span>
-          </b-col>
-        </b-row>
-      </b-container>
-    </div>
+    <MediaFilters />
   </div>
 </template>
 
 <script lang="ts">
 import { EventBus } from './event-bus.js';
 import WaveSurfer from "wavesurfer.js";
+import MediaFilters from "../components/MediaFilters.vue";
 import NewMediaFile from "../components/NewMediaFile.vue";
 import { BIconPlayFill, BIconPauseFill, BIconGearFill, BIconVinyl, BIconVinylFill, BIconSearch, BButton, BButtonGroup } from 'bootstrap-vue';
 import { Component, Watch, Vue } from 'vue-property-decorator';
@@ -77,6 +58,7 @@ declare global {
 
 @Component({
   components: {
+    MediaFilters,
     NewMediaFile,
     BButton,
     BButtonGroup,

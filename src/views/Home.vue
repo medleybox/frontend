@@ -2,6 +2,16 @@
   .mediaplayer-row {
     margin: -18px;
   }
+  .container-fluid {
+    padding-right: 0px;
+    padding-left: 0px;
+  }
+  @media screen and (min-width: 990px) {
+    .container-fluid {
+      padding-right: 10px;
+      padding-left: 10px;
+    }
+  }
 </style>
 <template>
   <div class="home">
