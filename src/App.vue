@@ -31,7 +31,7 @@ $theme-colors: (
 }
 
 body, .close {
-  color: white;
+  color: var(--light);
 }
 
 #app, html {
@@ -40,7 +40,11 @@ body, .close {
 
 .form-control, .form-control:focus {
   background-color: rgb(29, 32, 33);
-  color: white;
+  color: var(--light);
+}
+
+.form-control:disabled {
+  background-color: #4a5255;
 }
 
 .card, .modal-content {

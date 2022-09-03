@@ -2,14 +2,23 @@
 .media-filters > .container-fluid {
   padding-left: 0px;
 }
+
 .media-filters_searchWrapper {
   width: 134%;
+}
+@media screen and (min-width: 500px) {
+  .media-filters_searchWrapper {
+    width: 100%;
+  }
 }
 .media-filters_search{
   width: 75%;
 }
 .media-filters_search > .btn-group {
   width: 75;
+}
+.media-filters_search input.form-control {
+  border-color: var(--primary);
 }
 
 .media-filters_type {

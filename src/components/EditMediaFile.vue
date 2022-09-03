@@ -194,7 +194,7 @@ export default class NewMediaFile extends Vue {
   }
 }
 </script>
-<style>
+<style scoped>
 .import-modal {
   margin-top: 20px;
 }
