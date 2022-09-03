@@ -57,7 +57,7 @@
     <b-col cols="12" md="6" lg="4" xl="3">
       <span :class="wrapperClass">
         <div v-show="this.thumbnail === ''" class="mediafile--thumbnail_loader justify-content-center mb-3">
-          <b-spinner></b-spinner>
+          <b-spinner variant="primary" />
         </div>
         <b-card
           :title="media.title"
