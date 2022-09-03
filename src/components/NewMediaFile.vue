@@ -47,7 +47,7 @@
         </div>
         <div v-if="this.checking === true">
           <b-row>
-            <b-col cols="6" offset-md="3">
+            <b-col cols="6" offset="3">
               <b-icon-circle-fill class="loader-svg" animation="throb" font-scale="4"></b-icon-circle-fill>
             </b-col>
           </b-row>
