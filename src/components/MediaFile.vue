@@ -151,9 +151,12 @@ export default class MediaFile extends Vue {
       const response = await fetch(url, {
           method: 'GET',
           credentials: 'same-origin',
-      })
-      .then( response => response.blob() )
-      .then( blob => {
+      }).then((response) => {
+          if (200 !== response.status) {
+            throw Error('Unable to load thumbnail');
+          }
+          return response.blob();
+      }).then( blob => {
           // eslint-disable-next-line
           const that = this;
           var reader = new FileReader();
