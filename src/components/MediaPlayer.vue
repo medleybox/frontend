@@ -29,6 +29,12 @@
           <b-icon-play-fill v-show="false === isPlaying"></b-icon-play-fill>
           <b-icon-pause-fill v-show="true === isPlaying"></b-icon-pause-fill>
         </b-button>
+        <b-button v-show="'' != this.playing" variant="outline-primary" @click="volume">
+          <b-icon-volume-off-fill></b-icon-volume-off-fill>
+        </b-button>
+        <b-button v-show="'' != this.playing" variant="outline-primary">
+          <b-form-input id="range-1" v-model="volume" type="range" min="0" max="100"></b-form-input>
+        </b-button>
         <NewMediaFile></NewMediaFile>
         <b-button variant="outline-primary" @click="settings">
           <b-icon-gear-fill></b-icon-gear-fill>
@@ -46,7 +52,7 @@ import { EventBus } from './event-bus.js';
 import WaveSurfer from "wavesurfer.js";
 import MediaFilters from "../components/MediaFilters.vue";
 import NewMediaFile from "../components/NewMediaFile.vue";
-import { BIconPlayFill, BIconPauseFill, BIconGearFill, BIconVinyl, BIconVinylFill, BIconSearch, BButton, BButtonGroup } from 'bootstrap-vue';
+import { BIconPlayFill, BIconPauseFill, BIconVolumeOffFill, BIconGearFill, BIconVinyl, BIconVinylFill, BIconSearch, BButton, BButtonGroup } from 'bootstrap-vue';
 import { Component, Watch, Vue } from 'vue-property-decorator';
 
 declare global {
@@ -64,6 +70,7 @@ declare global {
     BButtonGroup,
     BIconPlayFill,
     BIconPauseFill,
+    BIconVolumeOffFill,
     BIconGearFill,
     BIconVinyl,
     BIconVinylFill,
@@ -76,6 +83,7 @@ export default class MediaPlayer extends Vue {
   uuid!: string | null;
   trackSeconds = 0;
   trackTotal = 0;
+  volume = 50;
   metadata: any;
   waveSurfer: any;
   options: object;
@@ -118,6 +126,11 @@ export default class MediaPlayer extends Vue {
     document.title = value.title;
   }
 
+  @Watch('volume')
+  onPropertyChangedVolume(value: any) {
+    this.waveSurfer.setVolume(value/100);
+  }
+
   public playPause() {
     if (null !== this.waveSurfer) {
       this.waveSurfer.playPause();
@@ -136,11 +149,21 @@ export default class MediaPlayer extends Vue {
   private streamMediaStart(data: any): void {
     this.playing = data.stream.replace(/^http:\/\//i, 'https://');
     this.uuid = data.uuid;
-
     this.loadTrack();
   }
 
+  private resetPlayer(): void {
+    this.show = false;
+    this.playing = '';
+    this.uuid = null;
+    this.metadata = {};
+    this.trackSeconds = 0;
+    this.trackTotal = 0;
+    this.waveSurfer.empty()
+  }
+
   private loadTrack(): void {
+    console.log('Loading track metadata');
     fetch(process.env.VUE_APP_BASE_URL + '/media-file/metadata/' + this.uuid, {
         method: 'GET',
         credentials: 'same-origin',
@@ -148,12 +171,21 @@ export default class MediaPlayer extends Vue {
         return response.json();
     }).then((json) => {
         this.metadata = json;
-        if (null !== this.metadata.metadata.wavedata && null !== this.metadata.metadata.wavedata.data) {
-          this.waveSurfer.empty();
-          this.waveSurfer.load(this.playing, this.metadata.metadata.wavedata.data);
-          this.trackTotal = this.metadata.seconds;
-          window.startPlayEvent();
-          this.waveSurfer.play();
+        this.trackTotal = this.metadata.seconds;
+        this.loadTrackWavedata();
+    });
+  }
+
+  private loadTrackWavedata(): void {
+    console.log('Loading track wavedata');
+    fetch(process.env.VUE_APP_BASE_URL + '/media-file/wavedata/' + this.uuid, {
+        method: 'GET',
+        credentials: 'same-origin',
+    }).then((response) => {
+        return response.json();
+    }).then((json) => {
+        if (null !== json && null !== json.data) {
+          this.waveSurfer.load(this.playing, json.data, 'metadata');
         } else {
           alert('Unable to play media!');
         }
@@ -166,7 +198,8 @@ export default class MediaPlayer extends Vue {
       backend: 'MediaElementWebAudio',
       scrollParent: false,
       height: 128,
-      progressColor: 'rgb(99, 255, 252)'
+      progressColor: 'rgb(99, 255, 252)',
+      partialRender: false
     });
 
     waveSurfer.on('ready', () => {
@@ -181,6 +214,16 @@ export default class MediaPlayer extends Vue {
     waveSurfer.on('pause', () => {
       this.isPlaying = false;
     });
+
+    waveSurfer.on('finish', () => {
+      console.log('waveSurfer finish');
+      this.isPlaying = false;
+      setTimeout(() => {
+        this.resetPlayer();
+      }, 1200);
+    });
+
+    waveSurfer.setVolume(this.volume/100);
 
     waveSurfer.on('audioprocess', () => {
       if(waveSurfer.isPlaying()) {
@@ -210,10 +253,13 @@ export default class MediaPlayer extends Vue {
     this.search = '';
 
     EventBus.$on('stream-media-start', (data) => {
-      this.streamMediaStart(data);
+      // Stop any running player while loading next track
+      if (this.waveSurfer) {
+        this.waveSurfer.pause();
+      }
 
       Vue.nextTick(() => {
-        //
+        this.streamMediaStart(data);
       });
     });
   }
