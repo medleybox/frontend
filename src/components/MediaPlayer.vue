@@ -9,6 +9,21 @@
     background-color: #1d2021;
   }
 
+  .player--volume--button .btn {
+    max-width: 45px;
+    max-height: 38px;
+    z-index: 100;
+    position: relative;
+  }
+
+  .player--volume--button #volume-range {
+    transform: rotate(270deg);
+    width: 130px;
+    height: 0px;
+    margin-left: -54px;
+    margin-top: 65px;
+  }
+
   .player--timer {
     color: #007bff;
   }
@@ -21,19 +36,21 @@
 <template>
   <div class="mediaplayer sticky-top">
     <div class="player-controls float-right">
-      <b-button-group size="sm" class="float-left">
+      <b-button-group size="sm">
+        <span class="player--volume--button">
+          <b-button v-show="'' != this.playing" variant="outline-primary" @mouseover="overVolume" @mouseleave="hideVolume">
+            <b-icon-volume-off-fill></b-icon-volume-off-fill>
+            <b-form-input v-show="showVolume" id="volume-range" v-model="volume" type="range" min="0" max="100"></b-form-input>
+          </b-button>
+        </span>
+      </b-button-group>
+      <b-button-group size="sm">
         <b-button variant="outline-primary" class="no-hover-colour player--timer">
           {{showTrackSeconds}} / {{showTrackTotal}}
         </b-button>
         <b-button v-show="'' != this.playing" variant="outline-primary" @click="playPause">
           <b-icon-play-fill v-show="false === isPlaying"></b-icon-play-fill>
           <b-icon-pause-fill v-show="true === isPlaying"></b-icon-pause-fill>
-        </b-button>
-        <b-button v-show="'' != this.playing" variant="outline-primary" @click="volume">
-          <b-icon-volume-off-fill></b-icon-volume-off-fill>
-        </b-button>
-        <b-button v-show="'' != this.playing" variant="outline-primary">
-          <b-form-input id="range-1" v-model="volume" type="range" min="0" max="100"></b-form-input>
         </b-button>
         <NewMediaFile></NewMediaFile>
         <b-button variant="outline-primary" @click="settings">
@@ -83,7 +100,8 @@ export default class MediaPlayer extends Vue {
   uuid!: string | null;
   trackSeconds = 0;
   trackTotal = 0;
-  volume = 50;
+  volume = 100;
+  showVolume = false;
   metadata: any;
   waveSurfer: any;
   options: object;
@@ -123,18 +141,33 @@ export default class MediaPlayer extends Vue {
 
   @Watch('metadata')
   onPropertyChangedOne(value: any) {
-    document.title = value.title;
+    const endTitle = '- MedleyBox';
+    let title = `${value.title} ${endTitle}`;
+    if ('undefined' === typeof value.title) {
+      title = `Home ${endTitle}`;
+    }
+    document.title = title;
   }
 
   @Watch('volume')
-  onPropertyChangedVolume(value: any) {
+  onPropertyChangedVolume(value: any): void {
     this.waveSurfer.setVolume(value/100);
   }
 
-  public playPause() {
+  public playPause(): void {
     if (null !== this.waveSurfer) {
       this.waveSurfer.playPause();
     }
+  }
+
+  public overVolume(): void {
+    this.showVolume = true;
+  }
+
+  public hideVolume(): void {
+    setTimeout(() => {
+      this.showVolume = false;
+    }, 600);
   }
 
   public settings()
@@ -142,7 +175,7 @@ export default class MediaPlayer extends Vue {
     alert('Soon!');
   }
 
-  public changeShowType(type: string) {
+  public changeShowType(type: string): void {
     EventBus.$emit('update-show-type', type);
   }
 
@@ -159,7 +192,6 @@ export default class MediaPlayer extends Vue {
     this.metadata = {};
     this.trackSeconds = 0;
     this.trackTotal = 0;
-    this.waveSurfer.empty()
   }
 
   private loadTrack(): void {
@@ -171,8 +203,12 @@ export default class MediaPlayer extends Vue {
         return response.json();
     }).then((json) => {
         this.metadata = json;
+        this.trackSeconds = 0;
         this.trackTotal = this.metadata.seconds;
         this.loadTrackWavedata();
+        Vue.nextTick(() => {
+          this.waveSurfer.empty();
+        });
     });
   }
 

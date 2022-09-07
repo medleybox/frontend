@@ -19,7 +19,7 @@
     padding-top: 55%;
   }
 
-  .card-img-top {
+  .loading .card-img-top {
     min-height: 24vh;
   }
 
