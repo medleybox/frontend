@@ -53,7 +53,7 @@
           <b-icon-pause-fill v-show="true === isPlaying"></b-icon-pause-fill>
         </b-button>
         <NewMediaFile></NewMediaFile>
-        <b-button variant="outline-primary" @click="settings">
+        <b-button variant="outline-primary" @click="settingsModal">
           <b-icon-gear-fill></b-icon-gear-fill>
         </b-button>
       </b-button-group>
@@ -61,16 +61,19 @@
     <h3 class="player--title" v-show="'' != this.playing">{{currentPlayingTitle}}</h3>
     <div v-show="'' != this.playing" id="waveform" ref="wave"></div>
     <MediaFilters />
+    <user-settings v-bind:settings="settings"/>
   </div>
 </template>
 
 <script lang="ts">
+import { isIOS } from 'mobile-device-detect';
 import { EventBus } from './event-bus.js';
 import WaveSurfer from "wavesurfer.js";
 import MediaFilters from "../components/MediaFilters.vue";
 import NewMediaFile from "../components/NewMediaFile.vue";
+import UserSettings from './UserSettings.vue';
 import { BIconPlayFill, BIconPauseFill, BIconVolumeOffFill, BIconGearFill, BIconVinyl, BIconVinylFill, BIconSearch, BButton, BButtonGroup } from 'bootstrap-vue';
-import { Component, Watch, Vue } from 'vue-property-decorator';
+import { Component, Prop, Watch, Vue } from 'vue-property-decorator';
 
 declare global {
     interface Window {
@@ -78,9 +81,9 @@ declare global {
         startPlayEvent: Function;
     }
 }
-
 @Component({
   components: {
+    'user-settings': UserSettings,
     MediaFilters,
     NewMediaFile,
     BButton,
@@ -107,6 +110,7 @@ export default class MediaPlayer extends Vue {
   options: object;
   show: boolean;
   search: string;
+  @Prop() readonly settings!: any;
 
   get currentPlayingTitle(): string {
     if ('' === this.playing) {
@@ -167,22 +171,29 @@ export default class MediaPlayer extends Vue {
   public hideVolume(): void {
     setTimeout(() => {
       this.showVolume = false;
-    }, 600);
+    }, 1200);
   }
 
-  public settings()
+  public settingsModal()
   {
-    alert('Soon!');
+    this.$bvModal.show('settingsModal');
   }
 
   public changeShowType(type: string): void {
     EventBus.$emit('update-show-type', type);
   }
 
-  private streamMediaStart(data: any): void {
+  private streamMediaStart(data: any): boolean {
+    if (isIOS && true === this.settings.openVlc) {
+      window.open(`vlc-x-callback://x-callback-url/stream?url=${data.stream}`, "_blank");
+
+      return true;
+    }
     this.playing = data.stream.replace(/^http:\/\//i, 'https://');
     this.uuid = data.uuid;
     this.loadTrack();
+
+    return true;
   }
 
   private resetPlayer(): void {

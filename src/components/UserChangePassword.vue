@@ -57,7 +57,7 @@ export default class UserChangePassword extends Vue {
   onSubmit(): void {
     const formData = new FormData();
     formData.append('password', this.password);
-    fetch(process.env.VUE_APP_BASE_URL + '/update-password', {
+    fetch(process.env.VUE_APP_BASE_URL + '/user/update-password', {
       body: formData,
       method: 'POST',
       credentials: 'same-origin'

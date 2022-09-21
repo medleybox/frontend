@@ -17,7 +17,7 @@
   <div class="home">
     <EditMediaFile></EditMediaFile>
     <MediaFileImportLog></MediaFileImportLog>
-    <MediaPlayer></MediaPlayer>
+    <MediaPlayer :settings="settings"></MediaPlayer>
     <div class="">
       <b-container fluid>
         <b-row no-gutters>
@@ -47,6 +47,7 @@ import { Component, Watch, Vue } from 'vue-property-decorator';
 export default class Home extends Vue {
   mediaFiles!: object;
   mediaShowing!: object;
+  settings!: any;
   showType = 'home';
 
   constructor() {
@@ -64,6 +65,7 @@ export default class Home extends Vue {
     return {
       mediaFiles: {},
       mediaShowing: {},
+      settings: {},
       showType: 'home',
     };
   }
@@ -106,8 +108,20 @@ export default class Home extends Vue {
     });
   }
 
+  private fetchSettings(): void {
+    fetch(process.env.VUE_APP_BASE_URL + '/user/settings', {
+        method: 'GET',
+        credentials: 'same-origin',
+    }).then((response) => {
+        return response.json();
+    }).then((json) => {
+        this.settings = json;
+    });
+  }
+
   created(): void {
     this.updateMediaList();
+    this.fetchSettings();
 
     EventBus.$on('update-media-list', () => {
       this.updateMediaList();
@@ -115,6 +129,10 @@ export default class Home extends Vue {
 
     EventBus.$on('update-show-type', (type: string) => {
       this.showType = type;
+    });
+
+    EventBus.$on('settings-updated', () => {
+      this.fetchSettings();
     });
   }
 }

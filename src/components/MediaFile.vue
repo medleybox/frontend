@@ -90,7 +90,6 @@
 </template>
 
 <script lang="ts">
-import { isIOS } from 'mobile-device-detect';
 import { EventBus } from './event-bus.js';
 import { BCard, BIconPlayFill, BIconPencilSquare, BDropdown, BButton, BButtonGroup } from 'bootstrap-vue';
 import { Component, Prop, Vue } from 'vue-property-decorator';
@@ -130,11 +129,6 @@ export default class MediaFile extends Vue {
     return new Date(this.media.seconds * 1000).toISOString().substr(11, 8);
   }
 
-  get steamVlcLink(): string
-  {
-    return `vlc-x-callback://x-callback-url/stream?url=${this.media.stream}`;
-  }
-
   private async copyStreamLink()
   {
     try {
@@ -171,11 +165,6 @@ export default class MediaFile extends Vue {
   }
 
   private play(): boolean {
-    if (isIOS) {
-      window.open(this.steamVlcLink, "_blank");
-
-      return true;
-    }
     EventBus.$emit('stream-media-start', {uuid: this.media.uuid, stream: this.media.stream});
 
     return true;
