@@ -54,7 +54,7 @@
   }
 </style>
 <template>
-    <b-col cols="12" md="6" lg="4" xl="3">
+    <b-col cols="12" md="4" lg="3" xl="2">
       <span :class="wrapperClass">
         <div v-show="this.thumbnail === ''" class="mediafile--thumbnail_loader justify-content-center mb-3">
           <b-spinner variant="primary" />
