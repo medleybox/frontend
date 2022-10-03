@@ -113,7 +113,7 @@ export default class NewMediaFile extends Vue {
       return false;
     }
 
-    if (!this.youtube()) {
+    if (!this.youtube() && !this.soundcloud()) {
       return false;
     }
 
@@ -162,6 +162,19 @@ export default class NewMediaFile extends Vue {
     //Check if youtube link - https://stackoverflow.com/a/31726735
     const regex = /((http(s)?:\/\/)?)(www\.)?((youtube\.com\/)|(youtu.be\/))[\S]+/gi;
     const matches = regex.exec(this.url);
+    console.log(this.url, matches, regex);
+
+    if (null !== matches) {
+      return true;
+    }
+
+    return false;
+  }
+
+  soundcloud(): boolean {
+    const regex = /((http(s)?:\/\/)?)(www\.)?((soundcloud\.com\/))[\S]+/gi;
+    const matches = regex.exec(this.url);
+    console.log(this.url, matches, regex);
 
     if (null !== matches) {
       return true;
