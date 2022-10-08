@@ -18,13 +18,22 @@
     <EditMediaFile></EditMediaFile>
     <MediaFileImportLog></MediaFileImportLog>
     <MediaPlayer :settings="settings"></MediaPlayer>
-    <div class="">
-      <b-container fluid>
+    <b-container fluid>
+      <div v-show="showType !== 'home'" class="media--browser">
         <b-row no-gutters>
           <MediaFile v-for="(data) in mediaShowing" v-bind:media="data" :key="data.uuid"></MediaFile>
         </b-row>
-      </b-container>
-    </div>
+      </div>
+      <div v-show="showType === 'home'" class="media--home">
+        <b-row no-gutters>
+          <MediaFile v-for="(data) in mediaFiles['suggested']" v-bind:media="data" :key="data.uuid"></MediaFile>
+        </b-row>
+        <hr />
+        <b-row no-gutters>
+          <MediaFile v-for="(data) in mediaFiles['latest']" v-bind:media="data" :key="data.uuid"></MediaFile>
+        </b-row>
+      </div>
+    </b-container>
   </div>
 </template>
 
