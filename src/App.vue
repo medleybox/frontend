@@ -31,10 +31,23 @@ $theme-colors: (
 }
 
 body, .close {
+  color: var(--dark);
+}
+
+label, p, h3, h5, .dropdown-menu .dropdown-item {
   color: var(--light);
 }
 
-#app, html {
+.dropdown-menu .dropdown-item:hover {
+  background-color: rgb(0, 150, 147);
+}
+
+.dropdown-item.disabled {
+  background-color: #00969329 !important;
+  color: slategrey;
+}
+
+#app, html, .modal-content, .dropdown-menu {
   background-color: rgb(29, 32, 33);
 }
 
@@ -47,12 +60,8 @@ body, .close {
   background-color: #4a5255;
 }
 
-.card, .modal-content {
+.card {
   background-color: #111111;
-}
-
-.modal-content {
-  min-height: 150px;
 }
 
 .modal-title {

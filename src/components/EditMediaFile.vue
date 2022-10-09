@@ -1,34 +1,79 @@
+<style lang="scss">
+.vjs-tree {
+  .vjs-tree-node.is-highlight,
+  .vjs-tree-node:hover {
+    background-color: #00969345 !important;
+  }
+
+  .vjs-key,
+  .vjs-node-index {
+    color: var(--light) !important;
+  }
+
+  .vjs-carets > svg {
+    filter: invert(1);
+  }
+
+  .vjs-tree-node .vjs-indent-unit.has-line {
+    border-left: 1px dashed #009693;
+  }
+
+  .vjs-tree-brackets {
+    color: #009693;
+  }
+}
+</style>
 <template>
   <div class="edit">
     <b-modal ref="editModal" v-model="modalShow" id="edit" title="Edit media" hide-footer>
-      <b-form @submit="onSubmit">
-        <b-container fluid class="edit-modal">
-          <div v-if="fetching !== true && metadata.loaded === true">
-            <b-form-group id="input-group-title" label="Title" label-for="input-title">
-              <b-form-input id="input-title" v-model="metadata.title"></b-form-input>
-            </b-form-group>
+      <b-container fluid class="edit-modal">
+        <div v-if="fetching !== true && metadata.loaded === true">
+          <b-col cols=12 no-gutters>
+            <div class="d-flex justify-content-center">
+              <b-tabs pills>
+                <b-tab @click="tab = 'data'" title="Data" active></b-tab>
+                <b-tab @click="tab = 'metadata'" title="Metadata"></b-tab>
+                <b-tab title="Thubmnail" disabled></b-tab>
+              </b-tabs>
+            </div>
+          </b-col>
+          <b-col cols=12 no-gutters>
+            <div v-if="tab == 'data'" class="tab--data">
+              <b-form @submit="onSubmit">
+                <b-form-group id="input-group-title" label="Title" label-for="input-title">
+                  <b-form-input id="input-title" v-model="metadata.title"></b-form-input>
+                </b-form-group>
 
-            <b-form-group id="input-group-provider" label="Provider Class" label-for="input-provider">
-              <b-form-input disabled id="input-provider" v-model="metadata.metadata.provider"></b-form-input>
-            </b-form-group>
+                <b-form-group id="input-group-provider" label="Provider Class" label-for="input-provider">
+                  <b-form-input disabled id="input-provider" v-model="metadata.metadata.provider"></b-form-input>
+                </b-form-group>
 
-            <b-form-group id="input-group-size" label="Size" label-for="input-size">
-              <b-form-input disabled id="input-size" v-model="mediaSize"></b-form-input>
-            </b-form-group>
+                <b-form-group id="input-group-size" label="Size" label-for="input-size">
+                  <b-form-input disabled id="input-size" v-model="mediaSize"></b-form-input>
+                </b-form-group>
 
-            <b-form-group id="input-group-imported" label="Date Imported" label-for="input-imported">
-              <b-form-input disabled id="input-imported" v-model="metadata.metadata.imported"></b-form-input>
-            </b-form-group>
+                <b-form-group id="input-group-imported" label="Date Imported" label-for="input-imported">
+                  <b-form-input disabled id="input-imported" v-model="metadata.metadata.imported"></b-form-input>
+                </b-form-group>
 
-            <b-form-group id="input-group-importuser" label="User Imported" label-for="input-importuser">
-              <b-form-input disabled id="input-importuser" v-model="metadata.importuser"></b-form-input>
-            </b-form-group>
+                <b-form-group id="input-group-importuser" label="User Imported" label-for="input-importuser">
+                  <b-form-input disabled id="input-importuser" v-model="metadata.importuser"></b-form-input>
+                </b-form-group>
 
-            <b-button type="submit" variant="primary">Save</b-button>
-            <b-button type="button" variant="danger" @click="remove">Delete</b-button>
-          </div>
-        </b-container>
-      </b-form>
+                <div class="float-right">
+                  <b-button-group>
+                    <b-button type="submit" variant="primary">Save</b-button>
+                    <b-button type="button" variant="danger" @click="remove">Delete</b-button>
+                  </b-button-group>
+                </div>
+              </b-form>
+            </div>
+            <div v-if="tab == 'metadata'" class="tab--data">
+              <vue-json-pretty :show-icon=true :show-line=true :show-line-number=true :collapsed-on-click-brackets=true :data="metadata" />
+            </div>
+          </b-col>
+        </div>
+      </b-container>
     </b-modal>
   </div>
 </template>
@@ -37,6 +82,8 @@ import { EventBus } from './event-bus.js';
 import { BModal, BButton, BForm, BFormGroup, BFormInput, BImg, BContainer, BFormRow, BCol } from 'bootstrap-vue';
 import { Component, Vue } from 'vue-property-decorator';
 import prettyBytes from 'pretty-bytes';
+import VueJsonPretty from 'vue-json-pretty';
+import 'vue-json-pretty/lib/styles.css';
 
 interface Metadata {
   [key: string]: any;
@@ -61,7 +108,8 @@ type MetadataCallback = () => void;
     BImg,
     BContainer,
     BFormRow,
-    BCol
+    BCol,
+    VueJsonPretty
   },
 })
 export default class NewMediaFile extends Vue {
@@ -69,6 +117,7 @@ export default class NewMediaFile extends Vue {
   fetching!: boolean;
   uuid!: string;
   metadata!: EntryMetadata;
+  tab = 'data';
 
   private loadMedadata(uuid: string, callback: MetadataCallback|undefined|null): void {
     this.uuid = uuid;
@@ -194,8 +243,3 @@ export default class NewMediaFile extends Vue {
   }
 }
 </script>
-<style scoped>
-.import-modal {
-  margin-top: 20px;
-}
-</style>
