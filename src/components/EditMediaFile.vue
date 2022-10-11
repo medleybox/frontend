@@ -172,7 +172,7 @@ export default class NewMediaFile extends Vue {
 
   private get mediaSize() {
     if (null === this.metadata.metadata.size) {
-      return '0';
+      return '0 KB';
     }
 
     return prettyBytes(this.metadata.metadata.size);

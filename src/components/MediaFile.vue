@@ -16,11 +16,11 @@
   }
 
   .loading > .card {
-    padding-top: 55%;
+    padding-top: 53%;
   }
 
   .loading .card-img-top {
-    min-height: 24vh;
+    min-height: 120px;
   }
 
   .card-header {
@@ -41,16 +41,21 @@
   }
 
   .mediafile--thumbnail_loader {
-    padding-top: 20%;
+    padding-top: 18%;
     z-index: 100;
     display: flex;
     position: absolute;
-    padding-left: 45%;
+    padding-left: 40%;
   }
 
   .mediafile--thumbnail_loader > .spinner-border {
     width: 3rem;
     height: 3rem;
+  }
+
+  .card-img, .card-img-top {
+    max-height: 120px;
+    object-fit: contain;
   }
 </style>
 <template>
