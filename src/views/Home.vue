@@ -19,11 +19,6 @@
     <MediaFileImportLog></MediaFileImportLog>
     <MediaPlayer :settings="settings"></MediaPlayer>
     <b-container fluid>
-      <div v-show="showType !== 'home'" class="media--browser">
-        <b-row no-gutters>
-          <MediaFile v-for="(data) in mediaShowing" v-bind:media="data" :key="data.uuid"></MediaFile>
-        </b-row>
-      </div>
       <div v-show="showType === 'home'" class="media--home">
         <b-row no-gutters>
           <MediaFile v-for="(data) in mediaFiles['suggested']" v-bind:media="data" :key="data.uuid"></MediaFile>
@@ -31,6 +26,11 @@
         <hr />
         <b-row no-gutters>
           <MediaFile v-for="(data) in mediaFiles['latest']" v-bind:media="data" :key="data.uuid"></MediaFile>
+        </b-row>
+      </div>
+      <div v-show="showType === 'user'" class="media--browser">
+        <b-row no-gutters>
+          <MediaFile v-for="(data) in mediaFiles['user']" v-bind:media="data" :key="data.uuid"></MediaFile>
         </b-row>
       </div>
     </b-container>
@@ -94,6 +94,28 @@ export default class Home extends Vue {
     })
   }
 
+  private updateSuggestedList() {
+    this.refreshSuggestedList((files: object) => {
+      this.mediaFiles['suggested'] = {};
+      Vue.nextTick(() => {
+        this.doubleRaf(() => {
+          this.mediaFiles['suggested'] = files;
+        });
+      });
+    });
+  }
+
+  private refreshSuggestedList(callback: (json: Array<string>) => void): void {
+    fetch(process.env.VUE_APP_BASE_URL + '/media-file/suggested-list', {
+        method: 'GET',
+        credentials: 'same-origin',
+    }).then((response) => {
+        return response.json();
+    }).then((json) => {
+        callback(json);
+    });
+  }
+
   private updateMediaList() {
     this.refreshMediaList((files: object) => {
       this.mediaFiles = {};
@@ -136,7 +158,18 @@ export default class Home extends Vue {
       this.updateMediaList();
     });
 
+    EventBus.$on('update-suggested-list', () => {
+      this.updateSuggestedList();
+    });
+
     EventBus.$on('update-show-type', (type: string) => {
+      if (type === this.showType) {
+        return;
+      }
+
+      if ('home' === this.showType) {
+        this.updateSuggestedList();
+      }
       this.showType = type;
     });
 
