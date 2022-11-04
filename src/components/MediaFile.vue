@@ -1,26 +1,20 @@
-<style scoped>
+<style lang="scss">
   /* Used to hide the undefined message when using cards */
   .card-body {
     display: none;
   }
 
   .card {
-    margin: 0px;
+    margin: 4px;
     padding-top: 0%;
   }
 
-  @media screen and (min-width: 990px) {
-    .card {
-      margin: 4px;
-    }
-  }
-
   .loading > .card {
-    padding-top: 53%;
+    padding-top: 49%;
   }
 
   .loading .card-img-top {
-    min-height: 120px;
+    height: 162px;
   }
 
   .card-header {
@@ -38,6 +32,7 @@
 
   .mediafile--button-group .btn.dropdown-toggle {
     padding: 4px;
+    min-width: 30px;
   }
 
   .mediafile--thumbnail_loader {
@@ -54,15 +49,29 @@
   }
 
   .card-img, .card-img-top {
-    max-height: 120px;
+    max-height: 172px;
     object-fit: contain;
+  }
+
+  @media screen and (max-width: 990px) {
+    .card {
+      margin: 0px;
+    }
+
+    .loading .card-img-top {
+      max-height: 121px;
+    }
+
+    .card-img-top {
+      max-height: 121px;
+    }
   }
 </style>
 <template>
     <b-col cols="12" md="4" lg="3" xl="2">
       <span :class="wrapperClass">
-        <div v-show="this.thumbnail === ''" class="mediafile--thumbnail_loader justify-content-center mb-3">
-          <b-spinner variant="primary" />
+        <div class="mediafile--thumbnail_loader justify-content-center mb-3">
+          <b-spinner v-if="false === this.thumbnailLoaded" variant="primary" />
         </div>
         <b-card
           :title="media.title"
@@ -111,6 +120,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 })
 export default class MediaFile extends Vue {
   thumbnail: string;
+  thumbnailLoaded = false;
   @Prop() readonly media!: any;
 
   private data(): object {
@@ -155,12 +165,13 @@ export default class MediaFile extends Vue {
             throw Error('Unable to load thumbnail');
           }
           return response.blob();
-      }).then( blob => {
+      }).then(blob => {
           // eslint-disable-next-line
           const that = this;
           var reader = new FileReader();
-          reader.onload = function(){
+          reader.onload = function() {
             that.thumbnail = this.result ? this.result.toString() : '';
+            that.thumbnailLoaded = true;
           };
           reader.readAsDataURL(blob);
       });

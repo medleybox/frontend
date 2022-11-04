@@ -66,6 +66,14 @@ export default class Home extends Vue {
         if ("refreshMediaList" === event.detail) {
           this.updateMediaList();
         }
+
+        if ("refreshLatestList" === event.detail) {
+          this.updateLatestList();
+        }
+
+        if ("refreshUserList" === event.detail) {
+          this.updateUserList();
+        }
         // eslint-disable-next-line
     }) as EventListener, false);
   }
@@ -106,7 +114,51 @@ export default class Home extends Vue {
   }
 
   private refreshSuggestedList(callback: (json: Array<string>) => void): void {
-    fetch(process.env.VUE_APP_BASE_URL + '/media-file/suggested-list', {
+    fetch('/media-file/suggested-list', {
+        method: 'GET',
+        credentials: 'same-origin',
+    }).then((response) => {
+        return response.json();
+    }).then((json) => {
+        callback(json);
+    });
+  }
+
+  private updateLatestList() {
+    this.refreshLatestList((files: object) => {
+      this.mediaFiles['latest'] = {};
+      Vue.nextTick(() => {
+        this.doubleRaf(() => {
+          this.mediaFiles['latest'] = files;
+        });
+      });
+    });
+  }
+
+  private refreshLatestList(callback: (json: Array<string>) => void): void {
+    fetch('/media-file/latest-list', {
+        method: 'GET',
+        credentials: 'same-origin',
+    }).then((response) => {
+        return response.json();
+    }).then((json) => {
+        callback(json);
+    });
+  }
+
+  private updateUserList() {
+    this.refreshUserList((files: object) => {
+      this.mediaFiles['user'] = {};
+      Vue.nextTick(() => {
+        this.doubleRaf(() => {
+          this.mediaFiles['user'] = files;
+        });
+      });
+    });
+  }
+
+  private refreshUserList(callback: (json: Array<string>) => void): void {
+    fetch('/media-file/user-list', {
         method: 'GET',
         credentials: 'same-origin',
     }).then((response) => {
@@ -129,7 +181,7 @@ export default class Home extends Vue {
   }
 
   private refreshMediaList(callback: (json: Array<string>) => void): void {
-    fetch(process.env.VUE_APP_BASE_URL + '/media-file/list', {
+    fetch('/media-file/list', {
         method: 'GET',
         credentials: 'same-origin',
     }).then((response) => {
@@ -140,7 +192,7 @@ export default class Home extends Vue {
   }
 
   private fetchSettings(): void {
-    fetch(process.env.VUE_APP_BASE_URL + '/user/settings', {
+    fetch('/user/settings', {
         method: 'GET',
         credentials: 'same-origin',
     }).then((response) => {
@@ -156,6 +208,14 @@ export default class Home extends Vue {
 
     EventBus.$on('update-media-list', () => {
       this.updateMediaList();
+    });
+
+    EventBus.$on('update-latest-list', () => {
+      this.updateLatestList();
+    });
+
+    EventBus.$on('update-user-list', () => {
+      this.updateUserList();
     });
 
     EventBus.$on('update-suggested-list', () => {
