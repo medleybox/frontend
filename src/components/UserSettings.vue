@@ -70,7 +70,7 @@ export default class UserSettings extends Vue {
     formData.append('autoPlay', this.autoPlay ? '1' : '0');
     formData.append('random', this.random ? '1' : '0');
     formData.append('openVlc', this.openVlc ? '1' : '0');
-    fetch(process.env.VUE_APP_BASE_URL + '/user/update-settings', {
+    fetch('/user/update-settings', {
       body: formData,
       method: 'POST',
       credentials: 'same-origin'

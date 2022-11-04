@@ -140,7 +140,7 @@ export default class NewMediaFile extends Vue {
     const formData = new FormData();
     formData.append('url', this.url);
 
-    fetch(process.env.VUE_APP_BASE_URL + '/check', {
+    fetch('/check', {
       body: formData,
       method: 'POST',
       credentials: 'same-origin'
@@ -200,7 +200,7 @@ export default class NewMediaFile extends Vue {
     this.thumbnail = '';
     this.modalShow = false;
 
-    fetch(process.env.VUE_APP_BASE_URL + '/import-form', {
+    fetch('/import-form', {
       body: formData,
       method: 'POST',
       credentials: 'same-origin'

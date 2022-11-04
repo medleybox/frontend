@@ -1,5 +1,6 @@
 module.exports = {
   devServer: {
+     allowedHosts: 'all',
   },
   chainWebpack: config => {
     if(config.plugins.has('extract-css')) {

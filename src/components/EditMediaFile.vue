@@ -122,7 +122,7 @@ export default class NewMediaFile extends Vue {
   private loadMedadata(uuid: string, callback: MetadataCallback|undefined|null): void {
     this.uuid = uuid;
     this.fetching = true;
-    fetch(process.env.VUE_APP_BASE_URL + '/media-file/metadata/' + this.uuid, {
+    fetch('/media-file/metadata/' + this.uuid, {
         method: 'GET',
         credentials: 'same-origin',
     }).then((response) => {
@@ -147,7 +147,7 @@ export default class NewMediaFile extends Vue {
 
     this.resetModal();
 
-    fetch(process.env.VUE_APP_BASE_URL + '/media-file/update', {
+    fetch('/media-file/update', {
       body: formData,
       method: 'POST',
       credentials: 'same-origin'
@@ -163,7 +163,6 @@ export default class NewMediaFile extends Vue {
   }
 
   private resetModal()  {
-    //EventBus.$emit('update-media-list', {});
     this.$bvModal.hide('edit');
     this.uuid = '';
     this.metadata = {loaded: false, title: '', metadata: {}, delete: ''};
@@ -193,7 +192,7 @@ export default class NewMediaFile extends Vue {
         if (true === value) {
             console.log('edit hide');
             this.$bvModal.hide('edit');
-            fetch(process.env.VUE_APP_BASE_URL + this.metadata.delete, {
+            fetch(this.metadata.delete, {
                 method: 'GET',
                 credentials: 'same-origin',
             }).then((response) => {

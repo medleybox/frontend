@@ -1,7 +1,7 @@
 #!/bin/sh
 
 cd ../frontend/ && \
-DOCKER_BUILDKIT=1 docker build -t ghcr.io/medleybox/frontend:master . && \
+docker build -t ghcr.io/medleybox/frontend:master . && \
 cd ../webapp && \
 bin/docker-build nginx && \
 cd ../frontend

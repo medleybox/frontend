@@ -3,9 +3,9 @@
 docker run \
   --rm \
   -it \
-  -p 8080:8080 \
+  -p 443:443 \
   --entrypoint="node" \
   -v $(pwd):$(pwd) \
   --workdir $(pwd) \
-  node:16-alpine \
-  ./node_modules/.bin/vue-cli-service serve --public="medleybox.local"
+  node:18-alpine \
+  ./node_modules/.bin/vue-cli-service serve --public="medleybox.local" --host 0.0.0.0 --port=443 --https

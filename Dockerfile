@@ -1,6 +1,4 @@
-FROM node:current-alpine as builder
-
-ENV VUE_APP_BASE_URL ''
+FROM node:18-alpine3.16 as builder
 
 WORKDIR /app
 
@@ -18,7 +16,7 @@ RUN apk add --no-cache wget \
 
 COPY . /app
 
-RUN VUE_APP_BASE_URL='' npm run build \
+RUN npm run build \
   && rm -rf /app/dist/index.html /app/node_modules
 
 FROM scratch

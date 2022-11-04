@@ -207,7 +207,7 @@ export default class MediaPlayer extends Vue {
 
   private loadTrack(): void {
     console.log('Loading track metadata');
-    fetch(process.env.VUE_APP_BASE_URL + '/media-file/metadata/' + this.uuid, {
+    fetch('/media-file/metadata/' + this.uuid, {
         method: 'GET',
         credentials: 'same-origin',
     }).then((response) => {
@@ -225,7 +225,7 @@ export default class MediaPlayer extends Vue {
 
   private loadTrackWavedata(): void {
     console.log('Loading track wavedata');
-    fetch(process.env.VUE_APP_BASE_URL + '/media-file/wavedata/' + this.uuid, {
+    fetch('/media-file/wavedata/' + this.uuid, {
         method: 'GET',
         credentials: 'same-origin',
     }).then((response) => {
