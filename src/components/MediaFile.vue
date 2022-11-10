@@ -10,7 +10,7 @@
   }
 
   .loading > .card {
-    padding-top: 49%;
+    padding-top: 54%;
   }
 
   .loading .card-img-top {
@@ -64,6 +64,13 @@
 
     .card-img-top {
       max-height: 121px;
+    }
+  }
+
+  @media screen and (max-width: 1367px) {
+    .card-img, .card-img-top {
+      max-height: 121px;
+      height: 121px;
     }
   }
 </style>
