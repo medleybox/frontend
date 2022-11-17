@@ -17,7 +17,7 @@
   <div class="home">
     <EditMediaFile></EditMediaFile>
     <MediaFileImportLog></MediaFileImportLog>
-    <MediaPlayer :settings="settings"></MediaPlayer>
+    <MediaPlayer :showType="vShowType" :settings="settings"></MediaPlayer>
     <b-container fluid>
       <div v-show="showType === 'home'" class="media--home">
         <b-row no-gutters>
@@ -33,12 +33,16 @@
           <MediaFile v-for="(data) in mediaFiles['user']" v-bind:media="data" :key="data.uuid"></MediaFile>
         </b-row>
       </div>
+      <div v-show="showType === 'collections'" class="media--collection">
+        <MediaCollections></MediaCollections>
+      </div>
     </b-container>
   </div>
 </template>
 
 <script lang="ts">
 import { EventBus } from '../components/event-bus.js';
+import MediaCollections from '../components/MediaCollections.vue';
 import MediaFile from "../components/MediaFile.vue";
 import EditMediaFile from "../components/EditMediaFile.vue";
 import MediaPlayer from "../components/MediaPlayer.vue";
@@ -47,6 +51,7 @@ import { Component, Watch, Vue } from 'vue-property-decorator';
 
 @Component({
   components: {
+    MediaCollections,
     MediaFile,
     EditMediaFile,
     MediaPlayer,
@@ -57,7 +62,8 @@ export default class Home extends Vue {
   mediaFiles!: object;
   mediaShowing!: object;
   settings!: any;
-  showType = 'home';
+  showType = '';
+  vShowType!: number;
 
   constructor() {
     super();
@@ -83,7 +89,8 @@ export default class Home extends Vue {
       mediaFiles: {},
       mediaShowing: {},
       settings: {},
-      showType: 'home',
+      showType: null,
+      vShowType: 0,
     };
   }
 
@@ -94,6 +101,8 @@ export default class Home extends Vue {
         this.mediaShowing = this.mediaFiles[value];
       });
     });
+
+    sessionStorage.setItem('showType', value);
   }
 
   private doubleRaf (callback) {
@@ -202,7 +211,28 @@ export default class Home extends Vue {
     });
   }
 
+  private setShowTypeFromSession(): void {
+    let showType = sessionStorage.getItem('showType');
+    if (null === showType) {
+      showType = 'home';
+    }
+
+    this.showType = showType;
+    switch(showType) {
+      case "home":
+        this.vShowType = 0;
+        break;
+      case "user":
+        this.vShowType = 1;
+        break;
+      case "collections":
+        this.vShowType = 2;
+        break;
+    } 
+  }
+
   created(): void {
+    this.setShowTypeFromSession();
     this.updateMediaList();
     this.fetchSettings();
 

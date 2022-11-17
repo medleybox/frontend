@@ -60,7 +60,7 @@
     </div>
     <h3 class="player--title" v-show="'' != this.playing">{{currentPlayingTitle}}</h3>
     <div v-show="'' != this.playing" id="waveform" ref="wave"></div>
-    <MediaFilters />
+    <MediaFilters :showType="showType" />
     <user-settings v-bind:settings="settings"/>
   </div>
 </template>
@@ -111,6 +111,7 @@ export default class MediaPlayer extends Vue {
   show: boolean;
   search: string;
   @Prop() readonly settings!: any;
+  @Prop() readonly showType!: any;
 
   get currentPlayingTitle(): string {
     if ('' === this.playing) {

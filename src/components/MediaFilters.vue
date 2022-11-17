@@ -83,10 +83,10 @@
       </b-col>
       <b-col cols=12 lg=8 no-gutters>
         <div class="media-filters_type d-flex justify-content-center">
-          <b-tabs pills>
-            <b-tab @click="changeShowType('home')" title="Home" active></b-tab>
+          <b-tabs v-model="vShowType" pills>
+            <b-tab @click="changeShowType('home')" title="Home"></b-tab>
             <b-tab @click="changeShowType('user')" title="Media"></b-tab>
-            <b-tab title="Collections" disabled></b-tab>
+            <b-tab @click="changeShowType('collections')" title="Collections"></b-tab>
             <b-tab title="Podcasts" disabled></b-tab>
           </b-tabs>
         </div>
@@ -99,7 +99,7 @@
 <script lang="ts">
 import { EventBus } from './event-bus.js';
 import { BButton, BCol, BButtonGroup, BIconSearch } from 'bootstrap-vue';
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue } from 'vue-property-decorator';
 
 @Component({
   components: {
@@ -110,11 +110,19 @@ import { Component, Vue } from 'vue-property-decorator';
   },
 })
 export default class MediaFilters extends Vue {
-  type!: string;
-  search!: string;
+  type: string;
+  search: string;
+  vShowType!: number;
+  @Prop() readonly showType!: number;
 
   public changeShowType(type: string) {
     EventBus.$emit('update-show-type', type);
+  }
+
+  private data(): object {
+    return {
+      vShowType: this.showType,
+    };
   }
 
   constructor() {
