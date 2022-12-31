@@ -1,9 +1,4 @@
-<style lang="scss">
-  /* Used to hide the undefined message when using cards */
-  .card-body {
-    display: none;
-  }
-
+<style scoped lang="scss">
   .card {
     margin: 4px;
     padding-top: 0%;
@@ -21,13 +16,25 @@
     padding-bottom: 0;
   }
 
-  .mediafile--title {
+  .card-title {
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
-    height: 48px;
+    height: 55px;
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
+    color: white;
+    font-size: 16px;
+  }
+
+  .card-body {
+    flex: 1 1 auto;
+    min-height: 1px;
+    padding: 10px;
+  }
+
+  .card-footer {
+    padding-top: 0;
   }
 
   .mediafile--button-group .btn.dropdown-toggle {
@@ -75,36 +82,33 @@
   }
 </style>
 <template>
-    <b-col cols="12" md="4" lg="3" xl="2">
-      <span :class="wrapperClass">
-        <div class="mediafile--thumbnail_loader justify-content-center mb-3">
-          <b-spinner v-if="false === this.thumbnailLoaded" variant="primary" />
-        </div>
-        <b-card
-          :title="media.title"
-          :img-src="thumbnail"
-          img-alt=""
-          img-top>
-          <template #header>
-            <h5 class="mediafile--title">{{media.title}}</h5>
-          </template>
-          <template #footer>
-            <small class="text-muted">{{showTime}}</small>
-            <b-button-group size="sm" class="float-right mediafile--button-group">
-              <b-button variant="outline-primary" @click="play">
-                <b-icon-play-fill></b-icon-play-fill>
-              </b-button>
-              <b-dropdown dropleft variant="outline-primary">
-                <template #button-content></template>
-                <b-dropdown-item @click="play">Play</b-dropdown-item>
-                <b-dropdown-item disabled>Play next</b-dropdown-item>
-                <b-dropdown-item @click="copyStreamLink">Copy stream link</b-dropdown-item>
-                <b-dropdown-item disabled>Download</b-dropdown-item>
-                <b-dropdown-item @click="openEditModal">Edit</b-dropdown-item>
-                <b-dropdown-item @click="openDeleteModal">Delete</b-dropdown-item>
-              </b-dropdown>
-            </b-button-group>
-          </template>
+  <b-col cols="12" md="4" lg="3" xl="2">
+    <span :class="wrapperClass">
+      <div class="mediafile--thumbnail_loader justify-content-center mb-3">
+        <b-spinner v-if="false === this.thumbnailLoaded" variant="primary" />
+      </div>
+      <b-card
+        :title="media.title"
+        :img-src="thumbnail"
+        img-alt=""
+        img-top>
+        <template #footer>
+          <small class="text-muted">{{showTime}}</small>
+          <b-button-group size="sm" class="float-right mediafile--button-group">
+            <b-button variant="outline-primary" @click="play">
+              <b-icon-play-fill></b-icon-play-fill>
+            </b-button>
+            <b-dropdown dropleft variant="outline-primary">
+              <template #button-content></template>
+              <b-dropdown-item @click="play">Play</b-dropdown-item>
+              <b-dropdown-item disabled>Play next</b-dropdown-item>
+              <b-dropdown-item @click="copyStreamLink">Copy stream link</b-dropdown-item>
+              <b-dropdown-item disabled>Download</b-dropdown-item>
+              <b-dropdown-item @click="openEditModal">Edit</b-dropdown-item>
+              <b-dropdown-item @click="openDeleteModal">Delete</b-dropdown-item>
+            </b-dropdown>
+          </b-button-group>
+        </template>
       </b-card>
     </span>
   </b-col>
@@ -132,12 +136,11 @@ export default class MediaFile extends Vue {
 
   private data(): object {
     return {
-      mainProps: {blank: true, blankColor: '#777', width: 640, height: 360, class: 'm1'},
       thumbnail: ''
     };
   }
 
-  get wrapperClass()
+  get wrapperClass(): string
   {
     if ('' === this.thumbnail) {
       return 'loading';

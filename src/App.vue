@@ -64,7 +64,7 @@ label, p, h3, h5, .dropdown-menu .dropdown-item {
   background-color: #111111;
 }
 
-.modal-title {
+h1, .modal-title {
   color: var(--primary);
 }
 

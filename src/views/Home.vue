@@ -19,6 +19,7 @@
     <MediaFileImportLog></MediaFileImportLog>
     <MediaPlayer :showType="vShowType" :settings="settings"></MediaPlayer>
     <b-container fluid>
+      <CollectionSidebar />
       <div v-show="showType === 'home'" class="media--home">
         <b-row no-gutters>
           <MediaFile v-for="(data) in mediaFiles['suggested']" v-bind:media="data" :key="data.uuid"></MediaFile>
@@ -42,6 +43,7 @@
 
 <script lang="ts">
 import { EventBus } from '../components/event-bus.js';
+import CollectionSidebar from '../components/Collection/Sidebar.vue';
 import MediaCollections from '../components/MediaCollections.vue';
 import MediaFile from "../components/MediaFile.vue";
 import EditMediaFile from "../components/EditMediaFile.vue";
@@ -51,6 +53,7 @@ import { Component, Watch, Vue } from 'vue-property-decorator';
 
 @Component({
   components: {
+    CollectionSidebar,
     MediaCollections,
     MediaFile,
     EditMediaFile,

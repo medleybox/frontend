@@ -1,5 +1,8 @@
 # frontend
 
+https://bootstrap-vue.org/docs/components
+https://icons.getbootstrap.com/
+
 ## Project setup
 ```
 npm install

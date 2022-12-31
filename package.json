@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "bootstrap": "^4.6.0",
-    "bootstrap-vue": "2.21.2",
+    "bootstrap-vue": "2.23.1",
     "core-js": "^3.9.1",
     "mobile-device-detect": "^0.4.3",
     "node-fetch": "^2.6.1",
