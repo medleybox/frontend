@@ -68,7 +68,7 @@ export default class MediaFileImportLog extends Vue {
   get outputToString(): string {
     let str = '';
     this.output.forEach((i) => {
-      str += i;
+      str += i + '\n';
     });
     return str;
   }
@@ -192,15 +192,15 @@ export default class MediaFileImportLog extends Vue {
   mounted(): void {
     console.log('importLogOutput mounted()');
     document.addEventListener('importLogOutput', ((event: CustomEvent) => {
-        this.log.push(event.detail.data);
-        this.status = event.detail.stage;
+        this.log.push(event.detail.data.data);
+        this.status = event.detail.data.stage;
 
         //console.log('[importLogOutput] ' + event.detail.data, this.output);
         // eslint-disable-next-line
     }) as EventListener, false);
 
     document.addEventListener('importOutput', ((event: CustomEvent) => {
-        this.output.push(event.detail.data);
+        this.output.push(event.detail.data.lines);
         //console.log('[importOutput] ' + event.detail.data, this.output);
         // eslint-disable-next-line
     }) as EventListener, false);
