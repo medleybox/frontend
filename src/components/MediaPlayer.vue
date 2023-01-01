@@ -185,13 +185,16 @@ export default class MediaPlayer extends Vue {
   }
 
   private streamMediaStart(data: any): boolean {
+    this.uuid = data.uuid;
+    this.trackPlay();
+
     if (isIOS && true === this.settings.openVlc) {
       window.open(`vlc-x-callback://x-callback-url/stream?url=${data.stream}`, "_blank");
 
       return true;
     }
+
     this.playing = data.stream.replace(/^http:\/\//i, 'https://');
-    this.uuid = data.uuid;
     this.loadTrack();
 
     return true;
@@ -221,6 +224,18 @@ export default class MediaPlayer extends Vue {
         Vue.nextTick(() => {
           this.waveSurfer.empty();
         });
+    });
+  }
+
+  private trackPlay(): void {
+    console.log('Loading track metadata');
+    fetch('/media-file/play/' + this.uuid, {
+        method: 'HEAD',
+        credentials: 'same-origin',
+    }).then((response) => {
+        return response.json();
+    }).then((json) => {
+        console.log(json);
     });
   }
 
