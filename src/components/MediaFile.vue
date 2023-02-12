@@ -103,7 +103,7 @@
               <b-dropdown-item @click="play">Play</b-dropdown-item>
               <b-dropdown-item disabled>Play next</b-dropdown-item>
               <b-dropdown-item @click="copyStreamLink">Copy stream link</b-dropdown-item>
-              <b-dropdown-item disabled>Download</b-dropdown-item>
+              <b-dropdown-item @click="startDownload">Download</b-dropdown-item>
               <b-dropdown-item @click="openEditModal">Edit</b-dropdown-item>
               <b-dropdown-item @click="openDeleteModal">Delete</b-dropdown-item>
             </b-dropdown>
@@ -118,6 +118,7 @@
 import { EventBus } from './event-bus.js';
 import { BCard, BIconPlayFill, BIconPencilSquare, BDropdown, BButton, BButtonGroup } from 'bootstrap-vue';
 import { Component, Prop, Vue } from 'vue-property-decorator';
+import JsFileDownloader from 'js-file-downloader';
 
 @Component({
   components: {
@@ -152,6 +153,20 @@ export default class MediaFile extends Vue {
   get showTime()
   {
     return new Date(this.media.seconds * 1000).toISOString().substr(11, 8);
+  }
+
+  private startDownload()
+  {
+    new JsFileDownloader({
+      url: this.media.download
+    })
+    .then(function () {
+      // Called when download ended
+    })
+    .catch(function (error) {
+      // Called when an error occurred
+      console.log(error);
+    });
   }
 
   private async copyStreamLink()

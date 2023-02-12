@@ -1,7 +1,7 @@
 module.exports = {
   devServer: {
     allowedHosts: 'all',
-    hot: true,
+    hot: false,
     liveReload: true,
   },
   chainWebpack: config => {

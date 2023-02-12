@@ -1,4 +1,4 @@
-FROM node:18-alpine3.16 as builder
+FROM node:18-alpine3.17 as builder
 
 WORKDIR /app
 
@@ -17,7 +17,9 @@ RUN apk add --no-cache wget \
 COPY . /app
 
 RUN npm run build \
-  && rm -rf /app/dist/index.html /app/node_modules
+  && rm -rf /app/dist/index.html /app/node_modules \
+  && sha256sum /app/dist/app.js | awk '{ print $1 }' > /app/dist/hash.txt \
+  && cat /app/dist/hash.txt
 
 FROM scratch
 
