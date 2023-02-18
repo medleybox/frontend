@@ -4,20 +4,18 @@
        <b-container fluid class="edit-modal">
           <b-progress :value="progress" class="mb-3"></b-progress>
           <div class="" v-show="!this.showOutputModal">
-            <h3>Import queued</h3>
-            <p>Waiting for job to start processing</p>
+            <h3>Import queued <b-spinner variant="primary" /></h3>
+            <p>Waiting for job to start processing ...</p>
           </div>
           <div class="" v-show="this.showOutputModal">
-            <h3>Import log</h3>
             <div class="output--container output--log">
               <pre id='pre_log'>{{this.logToString}}</pre>
             </div>
-            <h3>youtube-dl output</h3>
+            <h3>yt-dlp output</h3>
             <div class="output--container output--output">
               <pre id='pre_output'>{{this.outputToString}}</pre>
             </div>
           </div>
-          <!-- b-button variant="primary">Save</b-button -->
         </b-container>
     </b-modal>
   </div>
@@ -78,7 +76,7 @@ export default class MediaFileImportLog extends Vue {
   };
 
   public resetOutputState() {
-    console.log('resetOutputState()');
+    console.log('[MediaFileImportLog] resetOutputState()');
     this.output = [];
     this.log = [];
     this.progress = 0;
@@ -131,13 +129,20 @@ export default class MediaFileImportLog extends Vue {
       status: finish
     */
 
-    console.log('status: ' + value, this.progress);
+    console.log('[MediaFileImportLog] status: ' + value, this.progress);
     if ('start' === value) {
       this.output = [];
       this.log = [];
       this.progress = 0;
-
-      console.log('reset state');
+      console.log('[MediaFileImportLog] reset state');
+    }
+    if ('checkForDownload' === value) {
+      // Smooth scroll to the bottom once finished
+      const elem: HTMLInputElement = document.getElementById('pre_output') as HTMLInputElement;
+      elem.scrollTo({
+        top: 200000,
+        behavior: 'smooth'
+      });
     }
     if ('finish' === value) {
       setTimeout(() => {
@@ -149,7 +154,6 @@ export default class MediaFileImportLog extends Vue {
 
   @Watch('output')
   onOutputChanged() {
-    // value: Array<string>, oldValue: Array<string>
     const elem: HTMLInputElement = document.getElementById('pre_output') as HTMLInputElement;
     if (null === elem) {
       return null;
@@ -165,7 +169,7 @@ export default class MediaFileImportLog extends Vue {
   }
 
   check(): boolean {
-    console.log('check()');
+    console.log('[MediaFileImportLog] check()');
     return true;
   }
 
@@ -173,6 +177,7 @@ export default class MediaFileImportLog extends Vue {
     return {
         modalShow: false,
         uuid: '',
+        title: 'title',
         output: []
     };
   }
@@ -190,36 +195,38 @@ export default class MediaFileImportLog extends Vue {
   }
 
   mounted(): void {
-    console.log('importLogOutput mounted()');
+    console.log('[MediaFileImportLog] importLogOutput mounted()');
     document.addEventListener('importLogOutput', ((event: CustomEvent) => {
         this.log.push(event.detail.data.data);
         this.status = event.detail.data.stage;
-
-        //console.log('[importLogOutput] ' + event.detail.data, this.output);
         // eslint-disable-next-line
     }) as EventListener, false);
 
     document.addEventListener('importOutput', ((event: CustomEvent) => {
         this.output.push(event.detail.data.lines);
-        //console.log('[importOutput] ' + event.detail.data, this.output);
         // eslint-disable-next-line
     }) as EventListener, false);
   }
 }
 </script>
-<style>
+<style lang="scss" scoped>
 .output--container {
   white-space: pre-wrap;
   word-wrap: break-word;
 }
 
-pre#pre_log {
-  color: #fff;
-  height: 165px;
-}
+pre {
+  margin-bottom: 0px;
+  overflow-x: hidden;
 
-pre#pre_output {
-  color: #fff;
-  height: 260px;
+  &#pre_log {
+    color: #fff;
+    height: 165px;
+  }
+
+  &#pre_output {
+    color: #fff;
+    height: 274px;
+  }
 }
 </style>

@@ -19,7 +19,7 @@
   .card-title {
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
-    height: 55px;
+    height: 58px;
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
@@ -31,6 +31,7 @@
     flex: 1 1 auto;
     min-height: 1px;
     padding: 10px;
+    padding-bottom: 0px;
   }
 
   .card-footer {
@@ -60,24 +61,23 @@
     object-fit: contain;
   }
 
+  @media screen and (max-width: 1367px) {
+    .card-img, .card-img-top {
+      max-height: 121px;
+    }
+  }
+
   @media screen and (max-width: 990px) {
     .card {
       margin: 0px;
     }
 
     .loading .card-img-top {
-      max-height: 121px;
+      max-height: 264px;
     }
 
-    .card-img-top {
-      max-height: 121px;
-    }
-  }
-
-  @media screen and (max-width: 1367px) {
     .card-img, .card-img-top {
-      max-height: 121px;
-      height: 121px;
+      max-height: 264px;
     }
   }
 </style>

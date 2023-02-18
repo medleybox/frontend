@@ -256,9 +256,10 @@ export default class MediaPlayer extends Vue {
   }
 
   mounted() {
+    console.log('[waveSurfer] backend: "WebAudio"');
     const waveSurfer = WaveSurfer.create({
       container: document.getElementById('waveform'),
-      backend: 'MediaElementWebAudio',
+      backend: 'WebAudio',
       scrollParent: false,
       height: 128,
       progressColor: 'rgb(99, 255, 252)',
@@ -266,7 +267,7 @@ export default class MediaPlayer extends Vue {
     });
 
     waveSurfer.on('ready', () => {
-      console.log('waveSurfer ready');
+      console.log('[waveSurfer] ready');
       waveSurfer.play();
     });
 
@@ -279,7 +280,7 @@ export default class MediaPlayer extends Vue {
     });
 
     waveSurfer.on('finish', () => {
-      console.log('waveSurfer finish');
+      console.log('[waveSurfer] finish');
       this.isPlaying = false;
       setTimeout(() => {
         this.resetPlayer();

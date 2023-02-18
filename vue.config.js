@@ -2,7 +2,7 @@ module.exports = {
   devServer: {
     allowedHosts: 'all',
     hot: false,
-    liveReload: true,
+    liveReload: false,
   },
   chainWebpack: config => {
     if(config.plugins.has('extract-css')) {

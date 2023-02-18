@@ -1,12 +1,20 @@
 <style scoped>
+.modal-body {
+  padding-top: 0px y!important;
+}
 .import-modal {
   margin-top: 10px;
+}
+@media screen and (min-width: 576px) {
+  .import-thumbnail {
+    height: 245px;
+  }
 }
 
 .loader-svg {
   width: 100%;
   height: 185px;
-  padding: 50px;
+  padding: 70px;
   color: var(--info);
 }
 
@@ -33,7 +41,7 @@
         <div v-if="uuid !== ''">
           <b-form-row>
             <b-col cols="12">
-              <b-img fluid-grow :src="thumbnail"></b-img>
+              <b-img class="import-thumbnail" fluid-grow :src="thumbnail"></b-img>
             </b-col>
           </b-form-row>
           <b-form-row>
@@ -207,7 +215,13 @@ export default class NewMediaFile extends Vue {
     }).then(response =>
         response.json().then(json => {
           if (false === json.import) {
-            alert('Failed to import');
+            if (true === json.attempt) {
+              console.log('Failed to import but attempted!');
+              return false;
+            }
+
+            alert('Failed to import. Please try again'); 
+            return false;
           }
 
           return json;
@@ -225,11 +239,11 @@ export default class NewMediaFile extends Vue {
 
   private data(): object {
     return {
-        checking: false,
-        modalShow: false,
-        uuid: '',
-        title: '',
-        thumbnail: '',
+      checking: false,
+      modalShow: false,
+      uuid: '',
+      title: '',
+      thumbnail: '',
     };
   }
 }
