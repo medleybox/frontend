@@ -195,6 +195,7 @@ export default class MediaPlayer extends Vue {
     }
 
     this.playing = data.stream.replace(/^http:\/\//i, 'https://');
+    this.initWaveSurfer();
     this.loadTrack();
 
     return true;
@@ -255,7 +256,11 @@ export default class MediaPlayer extends Vue {
     });
   }
 
-  mounted() {
+  private initWaveSurfer(): void {
+    if (null !== this.waveSurfer) {
+      console.log('[waveSurfer] Run init but already loaded')
+      return;
+    }
     console.log('[waveSurfer] backend: "WebAudio"');
     const waveSurfer = WaveSurfer.create({
       container: document.getElementById('waveform'),
@@ -302,8 +307,14 @@ export default class MediaPlayer extends Vue {
     });
   }
 
+  mounted() {
+    console.log('[MediaPlayer] mounted()');
+  }
+
   beforeDestroy() {
-    this.waveSurfer.destroy();
+    if (this.waveSurfer) {
+      this.waveSurfer.destroy();
+    }
   }
 
   constructor() {
@@ -316,7 +327,7 @@ export default class MediaPlayer extends Vue {
     this.show = false;
     this.search = '';
 
-    EventBus.$on('stream-media-start', (data) => {
+    EventBus.$on('stream-media-start', (data: any) => {
       // Stop any running player while loading next track
       if (this.waveSurfer) {
         this.waveSurfer.pause();
