@@ -59,7 +59,6 @@ export default class Profile extends Vue {
   constructor() {
     super();
     this.showUpload = false;
-    console.log('profile')
   }
 
   created(): void {
@@ -85,7 +84,7 @@ export default class Profile extends Vue {
       dropzoneOptions: {
           url: '/profile/new-avatar',
           thumbnailWidth: 150,
-          maxFilesize: 0.5,
+          maxFilesize: 1,
           maxFiles: 1
       }
     };
