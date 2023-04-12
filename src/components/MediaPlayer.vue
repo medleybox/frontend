@@ -106,7 +106,7 @@ export default class MediaPlayer extends Vue {
   volume = 100;
   showVolume = false;
   metadata: any;
-  waveSurfer: any;
+  waveSurfer: any = null;
   options: object;
   show: boolean;
   search: string;
@@ -196,7 +196,9 @@ export default class MediaPlayer extends Vue {
 
     this.playing = data.stream.replace(/^http:\/\//i, 'https://');
     this.initWaveSurfer();
-    this.loadTrack();
+    Vue.nextTick(() => {
+      this.loadTrack();
+    });
 
     return true;
   }
@@ -222,9 +224,7 @@ export default class MediaPlayer extends Vue {
         this.trackSeconds = 0;
         this.trackTotal = this.metadata.seconds;
         this.loadTrackWavedata();
-        Vue.nextTick(() => {
-          this.waveSurfer.empty();
-        });
+        this.empty();
     });
   }
 
@@ -254,6 +254,14 @@ export default class MediaPlayer extends Vue {
           alert('Unable to play media!');
         }
     });
+  }
+
+  private empty(): void {
+    if (this.waveSurfer) {
+      Vue.nextTick(() => {
+        this.waveSurfer.empty();
+      });
+    }
   }
 
   private initWaveSurfer(): void {
@@ -302,9 +310,8 @@ export default class MediaPlayer extends Vue {
     });
 
     this.waveSurfer = waveSurfer;
-    Vue.nextTick(() => {
-      this.waveSurfer.empty();
-    });
+    console.log('[waveSurfer] Loaded!')
+    this.empty();
   }
 
   mounted() {
