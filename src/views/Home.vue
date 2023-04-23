@@ -1,4 +1,4 @@
-<style scoped>
+<style scoped lang="scss">
   .mediaplayer-row {
     margin: -18px;
   }
@@ -10,6 +10,19 @@
     .container-fluid {
       padding-right: 10px;
       padding-left: 10px;
+    }
+  }
+
+  .b-sidebar {
+    background-color: #1f5e61 !important;
+    color: white;
+
+    > .b-sidebar-header {
+      color: white;
+    }
+
+    .header__container {
+      width: 98%;
     }
   }
 </style>
@@ -43,7 +56,7 @@
 
 <script lang="ts">
 import { EventBus } from '../components/event-bus.js';
-import CollectionSidebar from '../components/Collection/Sidebar.vue';
+import CollectionSidebar from '../components/Sidebar/MediaCollection.vue';
 import MediaCollections from '../components/MediaCollections.vue';
 import MediaFile from "../components/MediaFile.vue";
 import EditMediaFile from "../components/EditMediaFile.vue";

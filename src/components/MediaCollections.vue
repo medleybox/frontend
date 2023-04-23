@@ -10,6 +10,10 @@
   position: absolute;
   padding-left: 29%;
 
+  &:hover {
+    cursor: pointer;
+  }
+
   & > svg.b-icon {
     color: red;
     font-size: 70px;
@@ -18,17 +22,17 @@
 </style>
 <template>
   <div>
-    <h1>My Collections</h1>
+    <h1>My Collections <b-button disabled size="sm" variant="outline-primary"><b-icon-plus font-scale="2"></b-icon-plus></b-button></h1>
     <b-row no-gutters>
       <b-col cols="12" md="3" lg="2">
         <b-card>
           <div class="mediacollection--container">
-            <div class="mediacollection--artwork">
+            <div class="mediacollection--artwork" @click="openFavorites">
               <b-icon :icon="icon" animation="throb"></b-icon>
             </div>
           </div>
           <template #footer>
-            <h4 class="mediacollection--title">Favorites</h4>
+            <h4 class="mediacollection--title">My Favorites</h4>
           </template>
         </b-card>
       </b-col>
@@ -37,7 +41,8 @@
 </template>
 
 <script lang="ts">
-import { BCard, BIcon, IconsPlugin} from 'bootstrap-vue';
+import { EventBus } from './event-bus.js';
+import { BCard, BIcon, BIconPlus, IconsPlugin} from 'bootstrap-vue';
 import { Component, Vue } from 'vue-property-decorator';
 
 Vue.use(IconsPlugin)
@@ -45,7 +50,8 @@ Vue.use(IconsPlugin)
 @Component({
   components: {
     BCard,
-    BIcon
+    BIcon,
+    BIconPlus
   },
 })
 export default class MediaCollections extends Vue {
@@ -59,8 +65,11 @@ export default class MediaCollections extends Vue {
     super();
   }
 
+  openFavorites() {
+    EventBus.$emit('sidebar-mediacollection-load');
+  }
+
   mounted(): void {
-    //this.resolveThumbnail();
     console.log('MediaCollections mounted');
   }
 }

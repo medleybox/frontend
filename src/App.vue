@@ -76,4 +76,10 @@ h1, .modal-title {
   padding: 0 10px;
 }
 
+header.b-sidebar-header {
+  .header__container {
+    width: 100%;
+  }
+}
+
 </style>
