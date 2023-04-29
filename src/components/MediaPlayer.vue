@@ -255,11 +255,15 @@ export default class MediaPlayer extends Vue {
         return response.json();
     }).then((json) => {
         if (null !== json && null !== json.data) {
-          this.waveSurfer.load(this.playing, json.data, 'metadata');
+          return json.data;
         } else {
           alert('Unable to play media!');
         }
-    });
+    }).then((wavedata: Array<any>) => {
+      this.waveSurfer.load(this.playing, wavedata);
+    }).then(() => {
+      this.waveSurfer.play(0);
+    })
   }
 
   private empty(): void {
