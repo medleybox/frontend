@@ -123,20 +123,26 @@ export default class MediaPlayer extends Vue {
 
   get showTrackSeconds()
   {
-    if (Number.isNaN(this.trackSeconds)) {
-      return '--:--:--';
-    }
-
-    return new Date(this.trackSeconds * 1000).toISOString().substr(11, 8)
+    return this.renderTimerFormat(this.trackSeconds)
   }
 
   get showTrackTotal()
   {
-    if (Number.isNaN(this.trackTotal)) {
-      return '--:--:--';
+    return this.renderTimerFormat(this.trackTotal)
+  }
+
+  private renderTimerFormat(time: any)
+  {
+    if (Number.isNaN(time)) {
+      return '--:--';
     }
 
-    return new Date(this.trackTotal * 1000).toISOString().substr(11, 8)
+    const timeAsDateString = new Date(time * 1000).toISOString();
+    if (this.trackTotal < 3600) {
+      return timeAsDateString.substring(14, 19);
+    }
+
+    return timeAsDateString.substring(11, 19);
   }
 
   @Watch('playing')

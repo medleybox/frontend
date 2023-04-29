@@ -152,7 +152,17 @@ export default class MediaFile extends Vue {
 
   get showTime()
   {
-    return new Date(this.media.seconds * 1000).toISOString().substr(11, 8);
+    const time = this.media.seconds;
+    if (Number.isNaN(time)) {
+      return '--:--';
+    }
+
+    const timeAsDateString = new Date(time * 1000).toISOString();
+    if (time < 3600) {
+      return timeAsDateString.substring(14, 19);
+    }
+
+    return timeAsDateString.substring(11, 19);
   }
 
   private startDownload()
