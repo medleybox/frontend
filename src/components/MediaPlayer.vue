@@ -31,6 +31,7 @@
   .player--title {
     margin-bottom: 0px;
     padding-top: 6px;
+    min-height: 40px;
   }
 </style>
 <template>
@@ -229,8 +230,9 @@ export default class MediaPlayer extends Vue {
         this.metadata = json;
         this.trackSeconds = 0;
         this.trackTotal = this.metadata.seconds;
-        this.loadTrackWavedata();
         this.empty();
+    }).then(() => {
+        this.loadTrackWavedata();
     });
   }
 
@@ -270,6 +272,8 @@ export default class MediaPlayer extends Vue {
     if (this.waveSurfer) {
       Vue.nextTick(() => {
         this.waveSurfer.empty();
+        this.waveSurfer.drawBuffer();
+        this.waveSurfer.pause();
       });
     }
   }
@@ -347,7 +351,9 @@ export default class MediaPlayer extends Vue {
     EventBus.$on('stream-media-start', (data: any) => {
       // Stop any running player while loading next track
       if (this.waveSurfer) {
-        this.waveSurfer.pause();
+        Vue.nextTick(() => {
+          this.waveSurfer.pause();
+        });
       }
 
       Vue.nextTick(() => {
