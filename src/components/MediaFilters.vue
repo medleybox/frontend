@@ -74,8 +74,8 @@
           <b-form>
             <div class="media-filters_search">
               <b-button-group>
-                <b-form-input v-model="search" disabled placeholder="Type to search" ref="searchInput" autocomplete="off"></b-form-input>
-                <b-button variant="outline-primary"><b-icon-search></b-icon-search></b-button>
+                <b-form-input v-model="search" placeholder="Type to search" ref="searchInput" autocomplete="off"></b-form-input>
+                <b-button variant="outline-primary" @click="manualSearch"><b-icon-search></b-icon-search></b-button>
               </b-button-group>
             </div>
           </b-form>
@@ -97,9 +97,10 @@
 </template>
 
 <script lang="ts">
+import {debounce} from "../Utils.js";
 import { EventBus } from './event-bus.js';
 import { BButton, BCol, BButtonGroup, BIconSearch } from 'bootstrap-vue';
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Watch, Vue } from 'vue-property-decorator';
 
 @Component({
   components: {
@@ -113,7 +114,18 @@ export default class MediaFilters extends Vue {
   type: string;
   search: string;
   vShowType!: number;
+  debouncedFetch: Function;
+  fetching = false;
   @Prop() readonly showType!: number;
+
+  @Watch('search')
+  onPropertyChanged(...args) {
+    if (true === this.fetching) {
+      console.log('Ignored fetch');
+      return false;
+    }
+    this.debouncedFetch(...args);
+  }
 
   public changeShowType(type: string) {
     EventBus.$emit('update-show-type', type);
@@ -129,6 +141,38 @@ export default class MediaFilters extends Vue {
     super();
     this.type = '';
     this.search = '';
+
+    this.debouncedFetch = debounce((value: string, oldValue: string) => {
+        console.log('[MediaFilter] search changed "' + value + '" | "' + oldValue + '"');
+        
+        this.searchMediaFile(value, (files: object) => {
+          Vue.nextTick(() => {
+            console.log('ref');
+          });
+        });
+     }, 500);
+  }
+
+  private searchMediaFile(query: string, callback: (json: Array<string>) => void): void {
+    this.fetching = true;
+    fetch(`/media-file/search?q=${query}`, {
+        method: 'GET',
+        credentials: 'same-origin',
+    }).then((response) => {
+        return response.json();
+    }).then((json) => {
+        this.fetching = false;
+        console.log(json);
+        callback(json);
+    });
+  }
+
+  private manualSearch(): void {
+    this.searchMediaFile(this.search, (files: object) => {
+      Vue.nextTick(() => {
+        console.log('ref');
+      });
+    });
   }
 }
 </script>
