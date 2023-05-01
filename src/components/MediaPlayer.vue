@@ -263,9 +263,7 @@ export default class MediaPlayer extends Vue {
         }
     }).then((wavedata: Array<any>) => {
       this.waveSurfer.load(this.playing, wavedata);
-    }).then(() => {
-      this.waveSurfer.play(0);
-    })
+    });
   }
 
   private empty(): void {
@@ -295,7 +293,7 @@ export default class MediaPlayer extends Vue {
 
     waveSurfer.on('ready', () => {
       console.log('[waveSurfer] ready');
-      waveSurfer.play();
+      waveSurfer.play(0);
     });
 
     waveSurfer.on('play', () => {

@@ -168,6 +168,9 @@ export default class MediaFilters extends Vue {
   }
 
   private manualSearch(): void {
+    if ("" === this.search) {
+      return;
+    }
     this.searchMediaFile(this.search, (files: object) => {
       Vue.nextTick(() => {
         console.log('ref');
