@@ -222,17 +222,17 @@ export default class MediaPlayer extends Vue {
   private loadTrack(): void {
     console.log('Loading track metadata');
     fetch('/media-file/metadata/' + this.uuid, {
-        method: 'GET',
-        credentials: 'same-origin',
+      method: 'GET',
+      credentials: 'same-origin',
     }).then((response) => {
-        return response.json();
+      return response.json();
     }).then((json) => {
-        this.metadata = json;
-        this.trackSeconds = 0;
-        this.trackTotal = this.metadata.seconds;
-        this.empty();
+      this.metadata = json;
+      this.trackSeconds = 0;
+      this.trackTotal = this.metadata.seconds;
+      this.empty();
     }).then(() => {
-        this.loadTrackWavedata();
+      this.loadTrackWavedata();
     });
   }
 

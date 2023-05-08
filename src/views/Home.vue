@@ -42,6 +42,12 @@
           <MediaFile v-for="(data) in mediaFiles['latest']" v-bind:media="data" :key="data.uuid"></MediaFile>
         </b-row>
       </div>
+      <div v-show="showType === 'search'" class="media--search">
+        <b-row no-gutters>
+          <h3 v-if="null === mediaFiles['search']">No media found</h3>
+          <MediaFile v-for="(data) in mediaShowing" v-bind:media="data" :key="data.uuid"></MediaFile>
+        </b-row>
+      </div>
       <div v-show="showType === 'user'" class="media--browser">
         <b-row no-gutters>
           <MediaFile v-for="(data) in mediaFiles['user']" v-bind:media="data" :key="data.uuid"></MediaFile>
@@ -84,25 +90,27 @@ export default class Home extends Vue {
   constructor() {
     super();
     document.addEventListener('ws', ((event: CustomEvent) => {
-        console.log('ws event', event, event.detail);
-        if ("refreshMediaList" === event.detail) {
-          this.updateMediaList();
-        }
+      console.log('ws event', event, event.detail);
+      if ("refreshMediaList" === event.detail) {
+        this.updateMediaList();
+      }
 
-        if ("refreshLatestList" === event.detail) {
-          this.updateLatestList();
-        }
+      if ("refreshLatestList" === event.detail) {
+        this.updateLatestList();
+      }
 
-        if ("refreshUserList" === event.detail) {
-          this.updateUserList();
-        }
-        // eslint-disable-next-line
+      if ("refreshUserList" === event.detail) {
+        this.updateUserList();
+      }
+      // eslint-disable-next-line
     }) as EventListener, false);
   }
 
   private data(): object {
     return {
-      mediaFiles: {},
+      mediaFiles: {
+        search: {},
+      },
       mediaShowing: {},
       settings: {},
       showType: null,
@@ -118,13 +126,30 @@ export default class Home extends Vue {
       });
     });
 
-    sessionStorage.setItem('showType', value);
+    if (['home', 'user', 'collections'].indexOf(value)) {
+      sessionStorage.setItem('showType', value);
+    }
   }
 
   private doubleRaf (callback) {
     requestAnimationFrame(() => {
       requestAnimationFrame(callback)
     })
+  }
+
+  private showSearch(files: object): void {
+    this.mediaFiles['search'] = {};
+    Vue.nextTick(() => {
+      this.mediaFiles['search'] = files;
+
+      if (Object.keys(files).length === 0) {
+        this.mediaFiles['search'] = null;
+      }
+    });
+
+    this.showType = 'search';
+    this.vShowType = -1;
+    this.mediaShowing = files;
   }
 
   private updateSuggestedList() {
@@ -140,12 +165,12 @@ export default class Home extends Vue {
 
   private refreshSuggestedList(callback: (json: Array<string>) => void): void {
     fetch('/media-file/suggested-list', {
-        method: 'GET',
-        credentials: 'same-origin',
+      method: 'GET',
+      credentials: 'same-origin',
     }).then((response) => {
-        return response.json();
+      return response.json();
     }).then((json) => {
-        callback(json);
+      callback(json);
     });
   }
 
@@ -162,12 +187,12 @@ export default class Home extends Vue {
 
   private refreshLatestList(callback: (json: Array<string>) => void): void {
     fetch('/media-file/latest-list', {
-        method: 'GET',
-        credentials: 'same-origin',
+      method: 'GET',
+      credentials: 'same-origin',
     }).then((response) => {
-        return response.json();
+      return response.json();
     }).then((json) => {
-        callback(json);
+      callback(json);
     });
   }
 
@@ -184,12 +209,12 @@ export default class Home extends Vue {
 
   private refreshUserList(callback: (json: Array<string>) => void): void {
     fetch('/media-file/user-list', {
-        method: 'GET',
-        credentials: 'same-origin',
+      method: 'GET',
+      credentials: 'same-origin',
     }).then((response) => {
-        return response.json();
+      return response.json();
     }).then((json) => {
-        callback(json);
+      callback(json);
     });
   }
 
@@ -207,28 +232,32 @@ export default class Home extends Vue {
 
   private refreshMediaList(callback: (json: Array<string>) => void): void {
     fetch('/media-file/list', {
-        method: 'GET',
-        credentials: 'same-origin',
+      method: 'GET',
+      credentials: 'same-origin',
     }).then((response) => {
-        return response.json();
+      return response.json();
     }).then((json) => {
-        callback(json.files);
+      callback(json.files);
     });
   }
 
   private fetchSettings(): void {
     fetch('/user/settings', {
-        method: 'GET',
-        credentials: 'same-origin',
+      method: 'GET',
+      credentials: 'same-origin',
     }).then((response) => {
-        return response.json();
+      return response.json();
     }).then((json) => {
-        this.settings = json;
+      this.settings = json;
     });
   }
 
   private setShowTypeFromSession(): void {
     let showType = sessionStorage.getItem('showType');
+    if ('search' === showType) {
+      showType = 'home';
+    }
+
     if (null === showType) {
       showType = 'home';
     }
@@ -281,6 +310,15 @@ export default class Home extends Vue {
 
     EventBus.$on('settings-updated', () => {
       this.fetchSettings();
+    });
+
+    EventBus.$on('set-search-results', (files: object) => {
+      this.showSearch(files);
+    });
+
+    EventBus.$on('reset-search', () => {
+      this.mediaFiles['search'] = {};
+      this.showType = 'home';
     });
   }
 }

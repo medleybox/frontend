@@ -11,7 +11,7 @@
     width: 100%;
   }
 }
-.media-filters_search{
+.media-filters_search {
   width: 75%;
 }
 .media-filters_search > .btn-group {
@@ -71,7 +71,7 @@
     <b-row no-gutters>
       <b-col cols="12" lg="4" no-gutters>
         <div class="media-filters_searchWrapper">
-          <b-form>
+          <b-form @submit="submitSearch">
             <div class="media-filters_search">
               <b-button-group>
                 <b-form-input v-model="search" placeholder="Type to search" ref="searchInput" autocomplete="off"></b-form-input>
@@ -114,7 +114,7 @@ export default class MediaFilters extends Vue {
   type: string;
   search: string;
   vShowType!: number;
-  debouncedFetch: Function;
+  debouncedFetch: any;
   fetching = false;
   @Prop() readonly showType!: number;
 
@@ -143,27 +143,29 @@ export default class MediaFilters extends Vue {
     this.search = '';
 
     this.debouncedFetch = debounce((value: string, oldValue: string) => {
-        console.log('[MediaFilter] search changed "' + value + '" | "' + oldValue + '"');
-        
-        this.searchMediaFile(value, (files: object) => {
-          Vue.nextTick(() => {
-            console.log('ref');
-          });
-        });
+      if ('' === value) {
+        this.resetSearch();
+        return false;
+      }
+      console.log('[MediaFilter] search changed "' + value + '" | "' + oldValue + '"');
+      this.searchMediaFile(value);
      }, 500);
   }
 
-  private searchMediaFile(query: string, callback: (json: Array<string>) => void): void {
+  private resetSearch(): void {
+    EventBus.$emit('reset-search');
+  }
+
+  private searchMediaFile(query: string): void {
     this.fetching = true;
     fetch(`/media-file/search?q=${query}`, {
-        method: 'GET',
-        credentials: 'same-origin',
+      method: 'GET',
+      credentials: 'same-origin',
     }).then((response) => {
-        return response.json();
+      this.fetching = false;
+      return response.json();
     }).then((json) => {
-        this.fetching = false;
-        console.log(json);
-        callback(json);
+      EventBus.$emit('set-search-results', json);
     });
   }
 
@@ -171,11 +173,15 @@ export default class MediaFilters extends Vue {
     if ("" === this.search) {
       return;
     }
-    this.searchMediaFile(this.search, (files: object) => {
-      Vue.nextTick(() => {
-        console.log('ref');
-      });
-    });
+    this.searchMediaFile(this.search);
+  }
+
+  private submitSearch(e): void {
+    e.preventDefault();
+    if ("" === this.search) {
+      return;
+    }
+    this.searchMediaFile(this.search);
   }
 }
 </script>
