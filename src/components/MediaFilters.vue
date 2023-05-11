@@ -22,21 +22,12 @@
 }
 
 .media-filters_type {
-  width: 260%;
+  width: 45vh;
 }
-@media screen and (min-width: 340px) {
-  .media-filters_type {
-    width: 250%;
-  }
-}
-@media screen and (min-width: 360px) {
-  .media-filters_type {
-    width: 222%;
-  }
-}
+
 @media screen and (min-width: 385px) {
   .media-filters_type {
-    width: 200%;
+    width: 170%;
   }
 }
 @media screen and (min-width: 422px) {
