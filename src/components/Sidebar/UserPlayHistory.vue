@@ -10,7 +10,6 @@ td {
       backdrop
       width="40%"
       v-model="show"
-      :title="title"
       bg-variant="dark"
       text-variant="light"
       id="collection-sidebar">
@@ -19,7 +18,7 @@ td {
           <p class="float-right">
             <b-icon-pencil-square alt="Edit"></b-icon-pencil-square>
           </p>
-          <h4>{{title}}</h4>
+          <h4>User Play History</h4>
         </div>
       </template>
       <div class="px-3 py-2">
@@ -34,8 +33,8 @@ td {
             <b-tr
               :key="track.uuid"
               v-for="track in this.tracks">
-              <b-td>{{track.seconds}}</b-td>
-              <b-td>{{track.title}}</b-td>
+              <b-td>{{track.media.seconds}}</b-td>
+              <b-td>{{track.media.title}}</b-td>
             </b-tr>
           </b-tbody>
           <b-tfoot>
@@ -65,23 +64,19 @@ Vue.use(IconsPlugin)
     BTableSimple,
   },
 })
-export default class MediaCollection extends Vue {
-  title: string;
+export default class UserPlayHistory extends Vue {
   tracks: object;
   show: boolean;
 
   constructor() {
     super();
-    this.title = '';
     this.tracks = {};
     this.show = false;
 
-    EventBus.$on('sidebar-mediacollection-load', () => {
-      this.title = 'set in loaded';
-      this.tracks = {};
+    EventBus.$on('sidebar-userplayhistory-open', () => {
       this.showSidebar();
       Vue.nextTick(() => {
-        this.loadCollection();
+        this.loadHistory();
       });
     });
   }
@@ -90,14 +85,14 @@ export default class MediaCollection extends Vue {
     this.show = true;
   }
 
-  loadCollection(): void {
-    fetch('/media-collection/index', {
+  loadHistory(): void {
+    fetch('/history/list', {
       method: 'GET',
       credentials: 'same-origin'
     }).then(response =>
         response.json().then(json => {
           console.log(json);
-          this.tracks = json.tracks;
+          this.tracks = json;
 
           return true;
         })

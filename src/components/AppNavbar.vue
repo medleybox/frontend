@@ -15,6 +15,7 @@
               <user-avatar />
             </template>
             <b-dropdown-item to="/profile">Profile</b-dropdown-item>
+            <b-dropdown-item @click="showHistory">History</b-dropdown-item>
             <b-dropdown-item v-b-modal.passwordModal href="#">Update password</b-dropdown-item>
             <b-dropdown-item href="/logout">Sign Out</b-dropdown-item>
           </b-nav-item-dropdown>
@@ -26,6 +27,7 @@
 </template>
 
 <script lang="ts">
+import { EventBus } from './event-bus.js';
 import { Component, Vue } from 'vue-property-decorator';
 import UserAvatar from './UserAvatar.vue';
 import UserChangePassword from './UserChangePassword.vue';
@@ -38,6 +40,10 @@ import UserChangePassword from './UserChangePassword.vue';
 export default class AppNavbar extends Vue {
   constructor() {
     super();
+  }
+
+  private showHistory() {
+    EventBus.$emit('sidebar-userplayhistory-open');
   }
 }
 </script>
