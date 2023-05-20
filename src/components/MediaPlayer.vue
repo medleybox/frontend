@@ -263,6 +263,8 @@ export default class MediaPlayer extends Vue {
         }
     }).then((wavedata: Array<any>) => {
       this.waveSurfer.load(this.playing, wavedata);
+    }).catch((error) => {
+      console.log(error);
     });
   }
 
@@ -271,7 +273,6 @@ export default class MediaPlayer extends Vue {
       Vue.nextTick(() => {
         this.waveSurfer.empty();
         this.waveSurfer.drawBuffer();
-        this.waveSurfer.pause();
       });
     }
   }
@@ -281,10 +282,20 @@ export default class MediaPlayer extends Vue {
       console.log('[waveSurfer] Run init but already loaded')
       return;
     }
-    console.log('[waveSurfer] backend: "WebAudio"');
+
+    var backend = 'WebAudio';
+    if (1 === this.settings.backend) {
+      backend = 'MediaElement';
+    }
+    if (2 === this.settings.backend) {
+      backend = 'MediaElementWebAudio';
+    }
+    console.log(`[waveSurfer] backend: "${backend}"`, this.settings.backend);
+
+    // https://wavesurfer-js.org/docs/options.html
     const waveSurfer = WaveSurfer.create({
       container: document.getElementById('waveform'),
-      backend: 'WebAudio',
+      backend: backend,
       scrollParent: false,
       height: 128,
       progressColor: 'rgb(99, 255, 252)',

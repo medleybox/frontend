@@ -10,6 +10,12 @@
             <b-form-checkbox v-model="random" name="random" switch>
               Random
             </b-form-checkbox>
+            Player backend
+            <b-form-select v-model="backend" name="backend">
+              <b-form-select-option value=0>WebAudio</b-form-select-option>
+              <b-form-select-option value=1>MediaElement</b-form-select-option>
+              <b-form-select-option value=2>MediaElementWebAudio</b-form-select-option>
+            </b-form-select>
           </b-form-group>
           <b-form-group id="mobile-settings" label="Mobile:">
             <b-form-checkbox v-model="openVlc" name="openVlc" switch>
@@ -44,6 +50,7 @@ export default class UserSettings extends Vue {
   autoPlay: boolean;
   random: boolean;
   openVlc: boolean;
+  backend: number;
 
   private data(): object {
     return {
@@ -56,6 +63,7 @@ export default class UserSettings extends Vue {
     this.autoPlay = this.settings.autoPlay;
     this.random = this.settings.random;
     this.openVlc = this.settings.openVlc;
+    this.backend = this.settings.backend;
   }
 
   constructor() {
@@ -63,6 +71,7 @@ export default class UserSettings extends Vue {
     this.autoPlay = false;
     this.random = false;
     this.openVlc = false;
+    this.backend = 0;
   }
 
   onSubmit(): void {
@@ -70,6 +79,8 @@ export default class UserSettings extends Vue {
     formData.append('autoPlay', this.autoPlay ? '1' : '0');
     formData.append('random', this.random ? '1' : '0');
     formData.append('openVlc', this.openVlc ? '1' : '0');
+    formData.append('backend', this.backend.toString());
+
     fetch('/user/update-settings', {
       body: formData,
       method: 'POST',
