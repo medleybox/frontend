@@ -242,9 +242,7 @@ export default class MediaPlayer extends Vue {
         method: 'HEAD',
         credentials: 'same-origin',
     }).then((response) => {
-        return response.json();
-    }).then((json) => {
-        console.log(json);
+        return response;
     });
   }
 
