@@ -205,6 +205,9 @@ export default class NewMediaFile extends Vue {
                 this.resetModal();
 
                 return true;
+            }).catch(err => {
+              // An error occurred
+              console.log(err);
             });
         }
     }).catch(err => {
