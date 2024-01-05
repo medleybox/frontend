@@ -216,7 +216,14 @@ export default class MediaFile extends Vue {
   }
 
   private play(): boolean {
-    EventBus.$emit('stream-media-start', {uuid: this.media.uuid, stream: this.media.stream});
+    EventBus.$emit(
+      'stream-media-start',
+      {
+        uuid: this.media.uuid,
+        stream: this.media.stream,
+        download: this.media.download
+      }
+    );
 
     return true;
   }

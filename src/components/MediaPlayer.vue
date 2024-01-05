@@ -149,6 +149,8 @@ export default class MediaPlayer extends Vue {
   @Watch('playing')
   onPropertyChanged(value: string, oldValue: string) {
     console.log('Player playing changed ' + value + ' | ' + oldValue);
+    // Make sure ws instance has been created
+    this.initWaveSurfer();
   }
 
   @Watch('metadata')
@@ -163,12 +165,12 @@ export default class MediaPlayer extends Vue {
 
   @Watch('volume')
   onPropertyChangedVolume(value: any): void {
-    this.waveSurfer.setVolume(value/100);
+    this.getWaveSurfer().setVolume(value/100);
   }
 
   public playPause(): void {
-    if (null !== this.waveSurfer) {
-      this.waveSurfer.playPause();
+    if (null !== this.getWaveSurfer()) {
+      this.getWaveSurfer().playPause();
     }
   }
 
@@ -201,10 +203,9 @@ export default class MediaPlayer extends Vue {
       return true;
     }
 
-    this.playing = data.stream.replace(/^http:\/\//i, 'https://');
-    this.initWaveSurfer();
+    this.playing = data.download.replace(/^http:\/\//i, 'https://');
     Vue.nextTick(() => {
-      this.loadTrack();
+      this.loadTrack()
     });
 
     return true;
@@ -220,7 +221,6 @@ export default class MediaPlayer extends Vue {
   }
 
   private loadTrack(): void {
-    console.log('Loading track metadata');
     fetch('/media-file/metadata/' + this.uuid, {
       method: 'GET',
       credentials: 'same-origin',
@@ -230,7 +230,6 @@ export default class MediaPlayer extends Vue {
       this.metadata = json;
       this.trackSeconds = 0;
       this.trackTotal = this.metadata.seconds;
-      this.empty();
     }).then(() => {
       this.loadTrackWavedata();
     });
@@ -260,88 +259,95 @@ export default class MediaPlayer extends Vue {
           alert('Unable to play media!');
         }
     }).then((wavedata: Array<any>) => {
-      this.waveSurfer.load(this.playing, wavedata);
+        const ws = this.getWaveSurfer()
+        ws.load(this.metadata.stream, wavedata, this.metadata.seconds);
+        ws.seekTo(0);
     }).catch((error) => {
       console.log(error);
     });
   }
 
   private empty(): void {
-    if (this.waveSurfer) {
+    const ws = this.getWaveSurfer()
+    ws.media.removeAttribute('src')
+    if (ws) {
       Vue.nextTick(() => {
-        this.waveSurfer.empty();
-        this.waveSurfer.drawBuffer();
+        ws.seekTo(0);
       });
     }
   }
 
+  private getWaveSurfer(): any {
+    return this.waveSurfer;
+  }
+
   private initWaveSurfer(): void {
-    if (null !== this.waveSurfer) {
-      console.log('[waveSurfer] Run init but already loaded')
-      return;
+    console.log(this.waveSurfer);
+    if (null !== this.waveSurfer && typeof this.waveSurfer !== "undefined") {
+      console.log('[waveSurfer] Run init but already loaded', this.waveSurfer)
+      return
     }
 
-    var backend = 'WebAudio';
-    if (1 === this.settings.backend) {
-      backend = 'MediaElement';
-    }
-    if (2 === this.settings.backend) {
-      backend = 'MediaElementWebAudio';
-    }
-    console.log(`[waveSurfer] backend: "${backend}"`, this.settings.backend);
+    // Create your own media element
+    const audio = new Audio()
+    audio.controls = true
+    audio.id = 'wavesurfer__debug'
 
-    // https://wavesurfer-js.org/docs/options.html
-    const waveSurfer = WaveSurfer.create({
-      container: document.getElementById('waveform'),
-      backend: backend,
-      scrollParent: false,
+    // Create a WaveSurfer instance and pass the media element
+    const ws_init = WaveSurfer.create({
+      container: '#waveform',
       height: 128,
+      waveColor: 'rgb(200, 0, 200)',
       progressColor: 'rgb(99, 255, 252)',
-      partialRender: false
-    });
+      media: audio, // <- this is the important part
+    })
 
-    waveSurfer.on('ready', () => {
+    ws_init.on('ready', () => {
       console.log('[waveSurfer] ready');
-      waveSurfer.play(0);
+      ws_init.play();
     });
 
-    waveSurfer.on('play', () => {
+    ws_init.on('play', () => {
       this.isPlaying = true;
     });
 
-    waveSurfer.on('pause', () => {
+    ws_init.on('pause', () => {
       this.isPlaying = false;
     });
 
-    waveSurfer.on('finish', () => {
+    ws_init.on('interaction', (time) => {
+      this.trackSeconds = Math.floor(time);
+    });
+
+    ws_init.on('finish', () => {
       console.log('[waveSurfer] finish');
       this.isPlaying = false;
       setTimeout(() => {
+        this.empty();
         this.resetPlayer();
       }, 1200);
     });
 
-    waveSurfer.setVolume(this.volume/100);
-
-    waveSurfer.on('audioprocess', () => {
-      if(waveSurfer.isPlaying()) {
-        const currentTime = waveSurfer.getCurrentTime();
-        this.trackSeconds = currentTime.toFixed(1);
+    ws_init.on('audioprocess', () => {
+      if(ws_init.isPlaying()) {
+        const currentTime = ws_init.getCurrentTime();
+        this.trackSeconds = Number(currentTime.toFixed(1));
       }
     });
 
-    this.waveSurfer = waveSurfer;
+    ws_init.setVolume(this.volume/100);
     console.log('[waveSurfer] Loaded!')
-    this.empty();
-  }
 
-  mounted() {
-    console.log('[MediaPlayer] mounted()');
+    // Uncomment for debug audio player
+    // document.body.appendChild(audio)
+    this.waveSurfer = ws_init;
+
+    return
   }
 
   beforeDestroy() {
-    if (this.waveSurfer) {
-      this.waveSurfer.destroy();
+    if (this.getWaveSurfer()) {
+      this.getWaveSurfer().destroy();
     }
   }
 
@@ -357,9 +363,9 @@ export default class MediaPlayer extends Vue {
 
     EventBus.$on('stream-media-start', (data: any) => {
       // Stop any running player while loading next track
-      if (this.waveSurfer) {
+      if (this.getWaveSurfer()) {
         Vue.nextTick(() => {
-          this.waveSurfer.pause();
+          this.getWaveSurfer().pause();
         });
       }
 
