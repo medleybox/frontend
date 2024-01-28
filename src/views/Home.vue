@@ -37,7 +37,7 @@
         <b-row no-gutters>
           <MediaFile v-for="(data) in mediaFiles['suggested']" v-bind:media="data" :key="data.uuid"></MediaFile>
         </b-row>
-        <hr />
+        <hr v-show="hasSuggestedMedia()" />
         <b-row no-gutters>
           <MediaFile v-for="(data) in mediaFiles['latest']" v-bind:media="data" :key="data.uuid"></MediaFile>
         </b-row>
@@ -110,6 +110,7 @@ export default class Home extends Vue {
     return {
       mediaFiles: {
         search: {},
+        suggested: {},
       },
       mediaShowing: {},
       settings: {},
@@ -131,7 +132,18 @@ export default class Home extends Vue {
     }
   }
 
-  private doubleRaf (callback) {
+  hasSuggestedMedia(): boolean {
+    console.log('hasSuggestedMedia()');
+    if (typeof this.mediaFiles['suggested'] === "undefined" || this.mediaFiles['suggested'].length == 0) {
+      return false;
+    }
+    console.log('is_array:', !Array.isArray(this.mediaFiles['suggested']));
+    console.log('suggested_length', this.mediaFiles['suggested'].length);
+
+    return Array.isArray(this.mediaFiles['suggested']);
+  }
+
+  private doubleRaf(callback) {
     requestAnimationFrame(() => {
       requestAnimationFrame(callback)
     })
@@ -280,6 +292,7 @@ export default class Home extends Vue {
     this.setShowTypeFromSession();
     this.updateMediaList();
     this.fetchSettings();
+    this.hasSuggestedMedia();
 
     EventBus.$on('update-media-list', () => {
       this.updateMediaList();
